@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Movie Streaming</string>
+    <string name="sample_image">Sample Image</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_find">Find</string>
+    <string name="title_profile">Profile</string>
+    <string name="welcome_splash">Welcome to Movie Streaming</string>
+
+    <string name="facebook_app_id">486752115987778</string>
+    <string name="fb_login_protocol_scheme">fb486752115987778</string>
+</resources>
