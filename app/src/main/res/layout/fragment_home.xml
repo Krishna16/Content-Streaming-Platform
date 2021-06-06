@@ -27,27 +27,26 @@
     <LinearLayout
         android:id="@+id/genre_layout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/viewpager_tab_layout">
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="32dp"
             android:fillViewport="true"
-            android:overScrollMode="ifContentScrolls">
+        android:overScrollMode="ifContentScrolls">
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/shows_with_genre_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
         </androidx.core.widget.NestedScrollView>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
