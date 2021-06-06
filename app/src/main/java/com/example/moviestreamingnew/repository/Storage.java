@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.repository;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +15,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +49,24 @@ public class Storage {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference item: listResult.getItems()){
-                    item.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            CardImageChild cardTemp = new CardImageChild(bytes);
-                            superheroImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Superhero", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+//                    item.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                        @Override
+//                        public void onSuccess(byte[] bytes) {
+//                            CardImageChild cardTemp = new CardImageChild(bytes);
+//                            superheroImages.add(cardTemp);
+//                            Toast.makeText(context, "Image Downloaded: Superhero", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                    item.getDownloadUrl().addOnSuccessListener(
+                            new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    CardImageChild cardTemp = new CardImageChild(uri.toString());
+                                    superheroImages.add(cardTemp);
+                                    Log.d("ShowUri","Uri is " + uri.toString());
+                                }
+                            }
+                    );
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -126,14 +139,27 @@ public class Storage {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference prefix: listResult.getItems()){
-                    prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            CardImageChild cardTemp = new CardImageChild(bytes);
-                            comedyImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Comedy", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+//                    prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                        @Override
+//                        public void onSuccess(byte[] bytes) {
+////                            CardImageChild cardTemp = new CardImageChild(bytes);
+////                            comedyImages.add(cardTemp);
+//                            Toast.makeText(context, "Image Downloaded: Comedy", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                    prefix.getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>()
+                            {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    CardImageChild cardImageChild = new CardImageChild(uri.toString());
+                                    comedyImages.add(cardImageChild);
+                                    Log.d("ShowUri","Uri is " + uri.toString());
+                                }
+                            }
+                    );
+
+
                 }
             }
 
@@ -210,12 +236,20 @@ public class Storage {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference prefix: listResult.getItems()){
-                    prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                    prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                        @Override
+//                        public void onSuccess(byte[] bytes) {
+////                            CardImageChild cardTemp = new CardImageChild(bytes);
+////                            scienceFictionImages.add(cardTemp);
+//                            Toast.makeText(context, "Image Downloaded: Science Fiction", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                    prefix.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(byte[] bytes) {
-                            CardImageChild cardTemp = new CardImageChild(bytes);
-                            scienceFictionImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Science Fiction", Toast.LENGTH_SHORT).show();
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardImageChild = new CardImageChild(uri.toString());
+                            scienceFictionImages.add(cardImageChild);
+                            Log.d("ShowUri","Uri is " + uri.toString());
                         }
                     });
                 }
