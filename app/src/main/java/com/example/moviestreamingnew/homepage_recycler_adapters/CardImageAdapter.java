@@ -40,12 +40,12 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
     public void onBindViewHolder(@NonNull CardImageAdapter.CardViewHolder holder, int position) {
         CardImageChild childItem = itemList.get(position);
 
-//        Bitmap bmp = BitmapFactory.decodeByteArray(childItem.getUrl(), 0, childItem.getUrl().length);
+        Bitmap bmp = BitmapFactory.decodeByteArray(childItem.getImage(), 0, childItem.getImage().length);
 
         Picasso.get().load(childItem.getUrl()).into(holder.cardImage);
         //image.setImageBitmap(Bitmap.createScaledBitmap(bmp, image.getWidth(), image.getHeight(), false));
 
-//        holder.cardImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(), bmp.getHeight(), false));
+        holder.cardImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(), bmp.getHeight(), false));
         //holder.cardImage.setImageResource(R.drawable.bates_motel);
     }
 
@@ -54,8 +54,8 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
         return itemList.size();
     }
 
-    public static class CardViewHolder extends RecyclerView.ViewHolder{
-        private final ImageView cardImage;
+    public class CardViewHolder extends RecyclerView.ViewHolder{
+        private ImageView cardImage;
 
         public CardViewHolder(View itemView){
             super(itemView);
