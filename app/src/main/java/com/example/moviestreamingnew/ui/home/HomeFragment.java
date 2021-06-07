@@ -1,15 +1,22 @@
 package com.example.moviestreamingnew.ui.home;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.moviestreamingnew.CardImageChild;
@@ -19,14 +26,24 @@ import com.example.moviestreamingnew.adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.CardImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
 import com.example.moviestreamingnew.repository.Storage;
+import com.example.moviestreamingnew.viewmodel.ImagesViewModel;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.okhttp.internal.framed.Header;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-public class HomeFragment extends Fragment {
+import javax.xml.transform.Result;
+
+public class HomeFragment extends Fragment{
 
     private HomeViewModel homeViewModel;
 
@@ -42,6 +59,11 @@ public class HomeFragment extends Fragment {
     private ArrayList<CardImageChild> cardImageScienceFiction;
     private ArrayList<ShowWithGenreParent> showWithGenreParents;
     private Storage storage;
+    private ImagesViewModel imagesViewModel;
+    private ExecutorService pool;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private List<Future<Result>> resultList = null;
+    private List<Task> taskList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,22 +85,55 @@ public class HomeFragment extends Fragment {
 
         storage = new Storage(root.getContext());
 
-        cardImageSuperhero = storage.downloadSuperheroMovieImages();
-        cardImageComedy = storage.downloadComedyMovieImages();
-        cardImageScienceFiction = storage.downloadScienceFictionImages();
+        pool = Executors.newFixedThreadPool(3);
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                cardImageSuperhero = storage.downloadSuperheroMovieImages();
+                cardImageComedy = storage.downloadComedyMovieImages();
+                cardImageScienceFiction = storage.downloadScienceFictionImages();
+            }
+        });
 
-        //cardImageComedy.add();
+        try {
+            pool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //imagesViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance();
 
         showWithGenreParents.add(new ShowWithGenreParent("Superhero", cardImageSuperhero));
         showWithGenreParents.add(new ShowWithGenreParent("Comedy", cardImageComedy));
         showWithGenreParents.add(new ShowWithGenreParent("Science Fiction", cardImageScienceFiction));
 
         linearLayoutManager = new LinearLayoutManager(root.getContext());
-        showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents);
+        showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());
 
         showsWithGenre = root.findViewById(R.id.shows_with_genre_view);
         showsWithGenre.setLayoutManager(linearLayoutManager);
         showsWithGenre.setAdapter(showWithGenreAdapter);
+
+        showWithGenreAdapter.notifyDataSetChanged();
+
+        swipeRefreshLayout = root.findViewById(R.id.pull_to_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                showWithGenreAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        //Snackbar.make(root.findViewById(R.id.pull_to_refresh_layout), "If the images haven't loaded, pull down to refresh", Snackbar.LENGTH_LONG).show();
+        Toast.makeText(root.getContext(), "Loading...", Toast.LENGTH_LONG).show();
+
+        SwipeRefreshLayout.OnRefreshListener swipeRefreshListner = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                showWithGenreAdapter.notifyDataSetChanged();
+            }
+        };
 
         movieImagePager = root.findViewById(R.id.movie_image_pager);
 
@@ -101,6 +156,28 @@ public class HomeFragment extends Fragment {
                         //tab.setText("Tab " + (position + 1));
                     }
                 }).attach();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new CountDownTimer(2000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(true);
+                                swipeRefreshListner.onRefresh();
+                            }
+                        });
+                    }
+
+                    public void onFinish() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }.start();
+            }
+        }, 3000);
 
         return root;
     }

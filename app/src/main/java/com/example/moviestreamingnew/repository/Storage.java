@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.repository;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +27,13 @@ public class Storage {
     private ArrayList<CardImageChild> scienceFictionImages;
     private Context context;
 
+    public Storage(){
+        this.firebaseStorage = FirebaseStorage.getInstance();
+        this.superheroImages = new ArrayList<>();
+        this.comedyImages = new ArrayList<>();
+        this.scienceFictionImages = new ArrayList<>();
+    }
+
     public Storage(Context context){
         this.firebaseStorage = FirebaseStorage.getInstance();
         this.superheroImages = new ArrayList<>();
@@ -35,7 +43,7 @@ public class Storage {
     }
 
     public ArrayList<CardImageChild> downloadSuperheroMovieImages(){
-        StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://movie-streaming-e28e2.appspot.com/");
+        StorageReference storageReference = firebaseStorage.getReference();
         StorageReference superhero = storageReference.child("images/Superhero");
 
         //StorageReference superImage1 = superhero.child("Arrow.jpg");
@@ -46,12 +54,11 @@ public class Storage {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference item: listResult.getItems()){
-                    item.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(byte[] bytes) {
-                            CardImageChild cardTemp = new CardImageChild(bytes);
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardTemp = new CardImageChild(uri.toString());
                             superheroImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Superhero", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -125,13 +132,33 @@ public class Storage {
         comedy.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            comedyImages.add(cardTemp);
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        /*comedy.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
                 for (StorageReference prefix: listResult.getItems()){
                     prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
                             CardImageChild cardTemp = new CardImageChild(bytes);
                             comedyImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Comedy", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Image Downloaded: Comedy", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -142,7 +169,7 @@ public class Storage {
             public void onFailure(@NonNull Exception e) {
 
             }
-        });
+        });*/
 
         /*StorageReference comedy1 = comedy.child("The Big Bang Theory.jpg");
         StorageReference comedy2 = comedy.child("The Office.jpg");
@@ -209,13 +236,33 @@ public class Storage {
         scienceFiction.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            scienceFictionImages.add(cardTemp);
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        /*scienceFiction.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
                 for (StorageReference prefix: listResult.getItems()){
                     prefix.getBytes(ONE_MEG).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
                             CardImageChild cardTemp = new CardImageChild(bytes);
                             scienceFictionImages.add(cardTemp);
-                            Toast.makeText(context, "Image Downloaded: Science Fiction", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Image Downloaded: Science Fiction", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -226,7 +273,7 @@ public class Storage {
             public void onFailure(@NonNull Exception e) {
 
             }
-        });
+        });*/
 
         return scienceFictionImages;
     }

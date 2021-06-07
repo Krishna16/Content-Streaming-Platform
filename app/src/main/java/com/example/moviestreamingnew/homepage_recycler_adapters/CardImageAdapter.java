@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.homepage_recycler_adapters;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -8,8 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
 
@@ -18,9 +26,11 @@ import java.util.List;
 public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.CardViewHolder> {
 
     private List<CardImageChild> itemList;
+    private Context context;
 
-    public CardImageAdapter(List<CardImageChild> list){
+    public CardImageAdapter(List<CardImageChild> list, Context context){
         this.itemList = list;
+        this.context = context;
     }
 
     @NonNull
@@ -39,12 +49,25 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
     public void onBindViewHolder(@NonNull CardImageAdapter.CardViewHolder holder, int position) {
         CardImageChild childItem = itemList.get(position);
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(childItem.getImage(), 0, childItem.getImage().length);
+        //Bitmap bmp = BitmapFactory.decodeByteArray(childItem.getImage(), 0, childItem.getImage().length);
 
         //image.setImageBitmap(Bitmap.createScaledBitmap(bmp, image.getWidth(), image.getHeight(), false));
 
-        holder.cardImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(), bmp.getHeight(), false));
+        //holder.cardImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(), bmp.getHeight(), false));
         //holder.cardImage.setImageResource(R.drawable.bates_motel);
+
+        /*Glide.with(context)
+                .asBitmap()
+                .load(childItem.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.cardImage);*/
+
+        Glide.with(context)
+                .load(childItem.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.cardImage);
     }
 
     @Override

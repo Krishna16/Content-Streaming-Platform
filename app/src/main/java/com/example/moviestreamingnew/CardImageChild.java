@@ -1,17 +1,17 @@
 package com.example.moviestreamingnew;
 
 public class CardImageChild {
-    private byte[] image;
+    private String url;
 
-    public CardImageChild(byte[] image) {
-        this.image = image;
+    public CardImageChild(String url) {
+        this.url = url;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImage() {
+        return url;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImage(String url) {
+        this.url = url;
     }
 }
