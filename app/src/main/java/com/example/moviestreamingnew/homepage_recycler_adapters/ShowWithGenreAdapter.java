@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.homepage_recycler_adapters;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +22,11 @@ public class ShowWithGenreAdapter extends RecyclerView.Adapter<ShowWithGenreAdap
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
 
     private ArrayList<ShowWithGenreParent> itemList;
+    private Context context;
 
-    public ShowWithGenreAdapter(ArrayList<ShowWithGenreParent> list){
+    public ShowWithGenreAdapter(ArrayList<ShowWithGenreParent> list, Context context){
         this.itemList = list;
+        this.context = context;
     }
 
     @NonNull
@@ -60,7 +63,7 @@ public class ShowWithGenreAdapter extends RecyclerView.Adapter<ShowWithGenreAdap
                                 .getCards()
                                 .size());
 
-        CardImageAdapter childItemAdapter = new CardImageAdapter(parentItem.getCards());
+        CardImageAdapter childItemAdapter = new CardImageAdapter(parentItem.getCards(), context);
 
         holder.cardView_scroll.setLayoutManager(layoutManager);
         holder.cardView_scroll.setAdapter(childItemAdapter);

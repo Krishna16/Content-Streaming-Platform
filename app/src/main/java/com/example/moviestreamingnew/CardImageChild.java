@@ -7,7 +7,7 @@ public class CardImageChild {
         this.url = url;
     }
 
-    public String getUrl() {
+    public String getImage() {
         return url;
     }
 
