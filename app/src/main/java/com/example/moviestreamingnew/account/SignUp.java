@@ -63,49 +63,24 @@ public class SignUp extends AppCompatActivity {
 
         register = findViewById(R.id.register);
 
-        googleButton = findViewById(R.id.google_button);
-        facebookButton = findViewById(R.id.facebook_button);
+        //googleButton = findViewById(R.id.google_button);
+        //facebookButton = findViewById(R.id.facebook_button);
 
         layoutUsername = findViewById(R.id.textInputLayoutUsername);
         layoutPassword = findViewById(R.id.textInputLayoutPassword);
         layoutConfirmPassword = findViewById(R.id.textInputLayoutConfirmPassword);
 
-        tabLayout = findViewById(R.id.sign_up_tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.email_icon));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.social_icon));
-
-        /*final SignUpHandler signUpCallback = new SignUpHandler() {
-            @Override
-            public void onSuccess(CognitoUser user, SignUpResult signUpResult) {
-                Log.d("Sign up successful!! ", signUpResult.toString());
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                Log.d("Sign up failed!! ", exception.getMessage());
-            }
-        };*/
+        //tabLayout = findViewById(R.id.sign_up_tabLayout);
+        //tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.email_icon));
+        //tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.social_icon));
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateInputs()){
                     if (NetworkCheck.networkCheck(SignUp.this)){
-                        /*UserRepository userRepository = new UserRepository();
-                        userRepository.signUp(username.getText().toString(), password.getText().toString());
-                        Toast.makeText(SignUp.this, "Registration Successful!!", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(SignUp.this, NavigationActivity.class));
-                        finish();*/
-
-                        //userAttributes.addAttribute("email", String.valueOf(username.getText()));
-                        //userAttributes.addAttribute("password", String.valueOf(password.getText()));
-
-                        //CognitoSettings cognitoSettings = new CognitoSettings(SignUp.this);
-
-                        //cognitoSettings.getUserPool().signUpInBackground(username.getText().toString(), password.getText().toString(), userAttributes, null, signUpCallback);
-
                         FirebaseAccount firebaseAccount = new FirebaseAccount(SignUp.this);
-                        firebaseAccount.createUserWithEmail(Objects.requireNonNull(username.getText()).toString(), password.getText().toString());
+                        firebaseAccount.createUserWithEmail(Objects.requireNonNull(username.getText()).toString(), Objects.requireNonNull(password.getText()).toString());
                     }
 
                     else{
@@ -115,7 +90,7 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
-        facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        /*facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(SignUp.this, "SignUp with Facebook Succeeded", Toast.LENGTH_SHORT).show();
@@ -137,27 +112,6 @@ public class SignUp extends AppCompatActivity {
             public void onClick(View v) {
 
             }
-        });
-
-        /*googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-                AccountManager am = AccountManager.get(SignUp.this);
-                Account[] accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-                String token = null;
-                try {
-                    token = GoogleAuthUtil.getToken(getApplicationContext(), accounts[0].name,
-                            "audience:server:client_id:YOUR_GOOGLE_CLIENT_ID");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (GoogleAuthException e) {
-                    e.printStackTrace();
-                }
-                Map<String, String> logins = new HashMap<String, String>();
-                logins.put("accounts.google.com", token);
-                credentialsProvider.setLogins(logins);
-            }
         });*/
     }
 
@@ -168,7 +122,7 @@ public class SignUp extends AppCompatActivity {
         finish();
     }
 
-    @Override
+    /*@Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
@@ -192,7 +146,7 @@ public class SignUp extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-    }
+    }*/
 
     private void emailView(){
         layoutUsername.setHint("Email");
@@ -223,7 +177,7 @@ public class SignUp extends AppCompatActivity {
         register.setVisibility(View.VISIBLE);
     }
 
-    private void socialView(){
+    /*private void socialView(){
         layoutUsername.setVisibility(View.GONE);
         layoutPassword.setVisibility(View.GONE);
         layoutConfirmPassword.setVisibility(View.GONE);
@@ -231,7 +185,7 @@ public class SignUp extends AppCompatActivity {
 
         //facebookButton.setVisibility(View.VISIBLE);
         googleButton.setVisibility(View.VISIBLE);
-    }
+    }*/
 
     private boolean validateInputs(){
         if (username.getText().toString().equals("")){
@@ -254,7 +208,8 @@ public class SignUp extends AppCompatActivity {
             username.setError("Please enter a valid email!!");
             return false;
         }
-        return false;
+
+        return true;
     }
 
     private boolean validateEmail(String email){
@@ -271,10 +226,10 @@ public class SignUp extends AppCompatActivity {
         return pat.matcher(email).matches();
     }
 
-    //for facebook intent to sign-in
+    /*//for facebook intent to sign-in
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-    }
+    }*/
 }

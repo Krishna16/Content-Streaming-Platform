@@ -247,7 +247,8 @@ public class Login extends AppCompatActivity {
             username.setError("Please enter a valid email!!");
             return false;
         }
-        return false;
+
+        return true;
     }
 
     private boolean validateEmail(String email){

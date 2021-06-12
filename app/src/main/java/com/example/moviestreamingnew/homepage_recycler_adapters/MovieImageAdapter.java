@@ -1,4 +1,4 @@
-package com.example.moviestreamingnew.adapters;
+package com.example.moviestreamingnew.homepage_recycler_adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -6,6 +6,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,8 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".account.NewUserForm"></activity>
-        <activity android:name=".account.SignUp"></activity>
-        <activity android:name=".account.Login"></activity>
+        <activity android:name=".account.SignUp" />
+        <activity android:name=".account.Login" />
         <activity
             android:name=".NavigationActivity"
             android:label="@string/title_activity_navigation" />

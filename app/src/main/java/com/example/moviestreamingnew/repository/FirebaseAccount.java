@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.repository;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -24,13 +25,18 @@ public class FirebaseAccount {
     private Context context;
     private FirebaseAuth mAuth;
     private boolean isSuccess;
+    private ProgressDialog progressDialog;
 
     public FirebaseAccount(Context context){
         this.context = context;
         this.mAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this.context);
     }
 
     public void createUserWithEmail(String email, String password){
+        progressDialog.setMessage("Registering....");
+        progressDialog.show();
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -39,6 +45,9 @@ public class FirebaseAccount {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Create User With Email", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            progressDialog.dismiss();
+
                             Toast.makeText(context, "User successfully registered!!", Toast.LENGTH_LONG).show();
 
                             Intent intent = new Intent(context, NavigationActivity.class);
@@ -47,6 +56,7 @@ public class FirebaseAccount {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("Create User With Email", "createUserWithEmail:failure", task.getException());
+                            progressDialog.dismiss();
                             Toast.makeText(context, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -55,6 +65,9 @@ public class FirebaseAccount {
     }
 
     public void signInWithEmail(String email, String password){
+        progressDialog.setMessage("Signing in....");
+        progressDialog.show();
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -63,6 +76,7 @@ public class FirebaseAccount {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("SignInWithEmail", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            progressDialog.dismiss();
 
                             Intent intent = new Intent(context, NavigationActivity.class);
                             context.startActivity(intent);
@@ -70,6 +84,7 @@ public class FirebaseAccount {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("SignInWithEmail", "signInWithEmail:failure", task.getException());
+                            progressDialog.dismiss();
                             Toast.makeText(context, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }

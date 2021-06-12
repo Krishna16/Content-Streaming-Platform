@@ -3,12 +3,13 @@ package com.example.moviestreamingnew.models;
 import java.util.ArrayList;
 
 public class User {
-    private String email;
-    private String phoneNumber;
     private String name;
     private ArrayList<String> genres;
     private String preference;
     private String gender;
+    private int age;
+    private String industry;
+    private boolean formFilled;
 
     public String getName() {
         return name;
@@ -18,7 +19,7 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
+    /*public String getEmail() {
         return email;
     }
 
@@ -32,7 +33,7 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
+    }*/
 
     public ArrayList<String> getGenres() {
         return genres;
@@ -46,6 +47,7 @@ public class User {
         this.genres.add(genre);
     }
 
+    //movie theatre vs ott platform
     public String getPreference() {
         return preference;
     }
@@ -60,5 +62,29 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public boolean isFormFilled() {
+        return formFilled;
+    }
+
+    public void setFormFilled(boolean formFilled) {
+        this.formFilled = formFilled;
     }
 }
