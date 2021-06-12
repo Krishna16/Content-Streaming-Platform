@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +15,17 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.ShowWithGenreParent;
-import com.example.moviestreamingnew.adapters.MovieImageAdapter;
-import com.example.moviestreamingnew.homepage_recycler_adapters.CardImageAdapter;
+import com.example.moviestreamingnew.homepage_recycler_adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
 import com.example.moviestreamingnew.repository.Storage;
-import com.example.moviestreamingnew.viewmodel.ImagesViewModel;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.okhttp.internal.framed.Header;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +52,6 @@ public class HomeFragment extends Fragment{
     private ArrayList<CardImageChild> cardImageScienceFiction;
     private ArrayList<ShowWithGenreParent> showWithGenreParents;
     private Storage storage;
-    private ImagesViewModel imagesViewModel;
     private ExecutorService pool;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Future<Result>> resultList = null;
@@ -70,13 +62,6 @@ public class HomeFragment extends Fragment{
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        //final TextView textView = root.findViewById(R.id.text_home);
-        /*homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
 
         showWithGenreParents = new ArrayList<>();
         cardImageSuperhero = new ArrayList<>();
