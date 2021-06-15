@@ -10,6 +10,7 @@ public class User {
     private int age;
     private String industry;
     private boolean formFilled;
+    private ArrayList<String> likedMovies;
 
     public String getName() {
         return name;
@@ -86,5 +87,13 @@ public class User {
 
     public void setFormFilled(boolean formFilled) {
         this.formFilled = formFilled;
+    }
+
+    public ArrayList<String> getLikedMovies() {
+        return likedMovies;
+    }
+
+    public void setLikedMovies(ArrayList<String> likedMovies) {
+        this.likedMovies = likedMovies;
     }
 }
