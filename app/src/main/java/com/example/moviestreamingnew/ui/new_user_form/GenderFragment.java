@@ -33,8 +33,9 @@ public class GenderFragment extends Fragment {
 
     private RadioButton maleButton;
     private RadioButton femaleButton;
+    private RadioButton preferButton;
 
-    private CardView male_cardView, female_cardView;
+    private CardView male_cardView, female_cardView, prefer_cardView;
 
     public GenderFragment(Context context) {
         // Required empty public constructor
@@ -64,16 +65,18 @@ public class GenderFragment extends Fragment {
 
         this.maleButton = root.findViewById(R.id.radio_male);
         this.femaleButton = root.findViewById(R.id.radio_female);
+        this.preferButton = root.findViewById(R.id.radio_prefer);
 
         this.male_cardView = root.findViewById(R.id.male_cardView);
         this.female_cardView = root.findViewById(R.id.female_cardView);
+        this.prefer_cardView = root.findViewById(R.id.prefer_cardView);
 
         male_cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 maleButton.setChecked(true);
                 femaleButton.setChecked(false);
-                male_cardView.setBackgroundResource(R.drawable.cardview_genre_selected);
+                preferButton.setChecked(false);
             }
         });
 
@@ -82,7 +85,16 @@ public class GenderFragment extends Fragment {
             public void onClick(View v) {
                 femaleButton.setChecked(true);
                 maleButton.setChecked(false);
-                female_cardView.setBackgroundResource(R.drawable.cardview_genre_selected);
+                preferButton.setChecked(false);
+            }
+        });
+
+        prefer_cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preferButton.setChecked(true);
+                maleButton.setChecked(false);
+                femaleButton.setChecked(false);
             }
         });
 

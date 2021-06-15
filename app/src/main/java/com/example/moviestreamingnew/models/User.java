@@ -7,10 +7,33 @@ public class User {
     private ArrayList<String> genres;
     private String preference;
     private String gender;
-    private int age;
     private String industry;
     private boolean formFilled;
     private ArrayList<String> likedMovies;
+
+    //singleton instance
+    private static User user = null;
+
+    public User() {
+    }
+
+    public User(String name, ArrayList<String> genres, String preference, String gender, String industry, boolean formFilled, ArrayList<String> likedMovies) {
+        this.name = name;
+        this.genres = genres;
+        this.preference = preference;
+        this.gender = gender;
+        this.industry = industry;
+        this.formFilled = formFilled;
+        this.likedMovies = likedMovies;
+    }
+
+    public static synchronized User getInstance(){
+        if (null == user){
+            user = new User();
+        }
+
+        return user;
+    }
 
     public String getName() {
         return name;
@@ -19,22 +42,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }*/
 
     public ArrayList<String> getGenres() {
         return genres;
@@ -63,14 +70,6 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getIndustry() {

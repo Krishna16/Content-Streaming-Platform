@@ -39,6 +39,8 @@ public class GenreSelectionAdapter extends RecyclerView.Adapter<GenreSelectionAd
         holder.genreCheck.setText(this.genres.get(position));
         holder.genreCard.setBackgroundResource(R.drawable.cardview_genre_unselected);
 
+        //holder.genreCheck.setTag();
+
         //User user = new User();
 
         /*holder.genreCard.setOnClickListener(new View.OnClickListener() {
