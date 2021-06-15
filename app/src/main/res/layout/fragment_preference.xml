@@ -13,7 +13,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="32dp"
-        android:text="What is your preferred industry?"
+        android:text="Where would you go for your dose of entertainment?"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -28,7 +28,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:text="We will try to provide language specific recommendations"
+        android:text="This question is to understand customer behavior after the pandemic."
         android:textColor="@android:color/white"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/bollywood_cardView"
+        android:id="@+id/theatre_cardView"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginStart="32dp"
@@ -50,21 +50,21 @@
         app:cardBackgroundColor="@color/colorPrimaryLight">
 
         <TextView
-            android:id="@+id/male_textView"
+            android:id="@+id/theatre_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:gravity="center_horizontal"
-            android:text="Bollywood"
+            android:text="Movie Theatres"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <RadioButton
-            android:id="@+id/radio_bollywood"
+            android:id="@+id/radio_theatre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -73,7 +73,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/hollywood_cardView"
+        android:id="@+id/ott_cardView"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginStart="32dp"
@@ -83,17 +83,17 @@
         app:cardElevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bollywood_cardView"
+        app:layout_constraintTop_toBottomOf="@id/theatre_cardView"
         app:cardBackgroundColor="@color/colorPrimaryLight">
 
         <TextView
-            android:id="@+id/female_textView"
+            android:id="@+id/ott_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="16dp"
             android:gravity="center_horizontal"
-            android:text="Hollywood"
+            android:text="OTT Platforms"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="20sp"
@@ -101,7 +101,7 @@
             android:layout_marginStart="16dp"/>
 
         <RadioButton
-            android:id="@+id/radio_hollywood"
+            android:id="@+id/radio_ott"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"

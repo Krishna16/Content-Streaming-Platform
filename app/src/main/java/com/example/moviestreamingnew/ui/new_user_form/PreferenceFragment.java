@@ -4,9 +4,7 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,7 @@ import android.widget.RadioButton;
 import com.example.moviestreamingnew.R;
 
 
-public class IndustryFragment extends Fragment {
+public class PreferenceFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,15 +26,15 @@ public class IndustryFragment extends Fragment {
 
     private View root;
 
-    private CardView hollywoodCard, bollywoodCard;
-    private RadioButton hollywoodRadio, bollywoodRadio;
+    private CardView theatreCard, ottCard;
+    private RadioButton theatreRadio, ottRadio;
 
-    public IndustryFragment() {
+    public PreferenceFragment() {
         // Required empty public constructor
     }
 
-    /*public static IndustryFragment newInstance(String param1, String param2) {
-        IndustryFragment fragment = new IndustryFragment();
+    /*public static PreferenceFragment newInstance(String param1, String param2) {
+        PreferenceFragment fragment = new PreferenceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -56,44 +54,40 @@ public class IndustryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        this.root = inflater.inflate(R.layout.fragment_industry, container, false);
+        this.root = inflater.inflate(R.layout.fragment_preference, container, false);
 
-        this.hollywoodRadio = root.findViewById(R.id.radio_hollywood);
-        this.bollywoodRadio = root.findViewById(R.id.radio_bollywood);
+        this.theatreRadio = root.findViewById(R.id.radio_theatre);
+        this.ottRadio = root.findViewById(R.id.radio_ott);
 
-        this.hollywoodCard = root.findViewById(R.id.hollywood_cardView);
-        this.bollywoodCard = root.findViewById(R.id.bollywood_cardView);
+        this.theatreCard = root.findViewById(R.id.theatre_cardView);
+        this.ottCard = root.findViewById(R.id.ott_cardView);
 
-        hollywoodCard.setOnClickListener(new View.OnClickListener() {
+        theatreCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hollywoodRadio.setChecked(true);
-                bollywoodRadio.setChecked(false);
-                hollywoodCard.setBackgroundResource(R.drawable.cardview_genre_selected);
-                bollywoodCard.setBackgroundResource(R.drawable.original_cardview);
+                theatreRadio.setChecked(true);
+                ottRadio.setChecked(false);
+                theatreCard.setBackgroundResource(R.drawable.cardview_genre_selected);
+                ottCard.setBackgroundResource(R.drawable.original_cardview);
             }
         });
 
-        bollywoodCard.setOnClickListener(new View.OnClickListener() {
+        ottCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bollywoodRadio.setChecked(true);
-                hollywoodRadio.setChecked(false);
-                bollywoodCard.setBackgroundResource(R.drawable.cardview_genre_selected);
-                hollywoodCard.setBackgroundResource(R.drawable.original_cardview);
+                ottRadio.setChecked(true);
+                theatreRadio.setChecked(false);
+                ottCard.setBackgroundResource(R.drawable.cardview_genre_selected);
+                theatreCard.setBackgroundResource(R.drawable.original_cardview);
             }
         });
 
         root.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceFragment preferenceFragment = new PreferenceFragment();
 
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, preferenceFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
             }
         });
 

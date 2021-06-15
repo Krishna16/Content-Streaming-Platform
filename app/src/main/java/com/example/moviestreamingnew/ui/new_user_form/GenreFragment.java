@@ -149,13 +149,13 @@ public class GenreFragment extends Fragment {
             }
         }));
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(root.getContext(), "Adapter Refreshed!!", Toast.LENGTH_LONG).show();
                 genreSelectionAdapter.notifyDataSetChanged();
             }
-        }, 3000);
+        }, 3000);*/
 
         return root;
     }

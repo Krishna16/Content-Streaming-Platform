@@ -19,8 +19,6 @@ public class NewUserForm extends AppCompatActivity {
         setContentView(R.layout.activity_new_user_form);
 
         NameFragment nameFragment = new NameFragment(this);
-        GenderFragment genderFragment = new GenderFragment(this);
-        GenreFragment genreFragment = new GenreFragment(this);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, nameFragment);
