@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +72,8 @@ public class GenderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 maleButton.setChecked(true);
-                femaleButton.setEnabled(false);
+                femaleButton.setChecked(false);
+                male_cardView.setBackgroundResource(R.drawable.cardview_genre_selected);
             }
         });
 
@@ -79,7 +81,20 @@ public class GenderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 femaleButton.setChecked(true);
-                maleButton.setEnabled(false);
+                maleButton.setChecked(false);
+                female_cardView.setBackgroundResource(R.drawable.cardview_genre_selected);
+            }
+        });
+
+        this.root.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GenreFragment genreFragment = new GenreFragment(root.getContext());
+
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, genreFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

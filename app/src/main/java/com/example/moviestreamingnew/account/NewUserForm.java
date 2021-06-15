@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.ui.new_user_form.GenderFragment;
+import com.example.moviestreamingnew.ui.new_user_form.GenreFragment;
 import com.example.moviestreamingnew.ui.new_user_form.NameFragment;
 
 public class NewUserForm extends AppCompatActivity {
@@ -19,9 +20,10 @@ public class NewUserForm extends AppCompatActivity {
 
         NameFragment nameFragment = new NameFragment(this);
         GenderFragment genderFragment = new GenderFragment(this);
+        GenreFragment genreFragment = new GenreFragment(this);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, genderFragment);
+        transaction.replace(R.id.fragment_container, nameFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,18 @@ public class NameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.root = inflater.inflate(R.layout.fragment_name, container, false);
+
+        this.root.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GenderFragment genderFragment = new GenderFragment(root.getContext());
+
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, genderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         return root;
     }

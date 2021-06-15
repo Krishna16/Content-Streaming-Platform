@@ -67,7 +67,8 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corner_button"
             android:text="NEXT"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:id="@+id/next"/>
 
     </androidx.cardview.widget.CardView>
 

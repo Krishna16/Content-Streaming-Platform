@@ -26,12 +26,14 @@ public class Storage {
     private ArrayList<CardImageChild> comedyImages;
     private ArrayList<CardImageChild> scienceFictionImages;
     private Context context;
+    private ArrayList<String> genres;
 
     public Storage(){
         this.firebaseStorage = FirebaseStorage.getInstance();
         this.superheroImages = new ArrayList<>();
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
+        this.genres = new ArrayList<>();
     }
 
     public Storage(Context context){
@@ -276,5 +278,48 @@ public class Storage {
         });*/
 
         return scienceFictionImages;
+    }
+
+    public ArrayList<String> getGenres(){
+        /*StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference images = storageReference.child("images");
+
+        images.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    //genres.add(item.getName().toString());
+                    //Log.d("Storage", item.getName());
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("Storage", uri.getPath());
+                            genres.add(uri.getPath());
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Storage", "Failed to get genres");
+            }
+        });
+
+        Log.d("Storage", "Size of genres in storage: " + genres.size());*/
+
+        genres.add("Action");
+        genres.add("Adventure");
+        genres.add("Animation");
+        genres.add("Comedy");
+        genres.add("Crime");
+        genres.add("Drama");
+        genres.add("Horror");
+        genres.add("Mystery");
+        genres.add("Science Fiction");
+        genres.add("Superhero");
+        genres.add("War");
+
+        return genres;
     }
 }
