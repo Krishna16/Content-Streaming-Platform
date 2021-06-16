@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import com.example.moviestreamingnew.common.RecyclerTouchListener;
 import com.example.moviestreamingnew.repository.Storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 public class GenreFragment extends Fragment {
@@ -53,14 +56,15 @@ public class GenreFragment extends Fragment {
 
     private Context context;
 
-    private ArrayList<String> selectedGenres;
+    private Set selectedGenres;
+    private Button next;
 
     public GenreFragment(Context context) {
         // Required empty public constructor
         this.genres = new ArrayList<>();
         this.storage = new Storage();
         this.context = context;
-        this.selectedGenres = new ArrayList<>();
+        this.selectedGenres = new HashSet();
     }
 
     /*public static GenreFragment newInstance(String param1, String param2) {
@@ -81,6 +85,7 @@ public class GenreFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,7 +97,11 @@ public class GenreFragment extends Fragment {
         gridLayoutManager = new GridLayoutManager(context, 2);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
 
-        root.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+        next = root.findViewById(R.id.next);
+        next.setEnabled(false);
+        next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
+
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IndustryFragment industryFragment = new IndustryFragment();
@@ -132,14 +141,38 @@ public class GenreFragment extends Fragment {
                 CardView tempCard = tempHolder.itemView.findViewById(R.id.genre_card);
                 CheckBox temp = tempHolder.itemView.findViewById(R.id.genre_checkbox);
 
-                if (selectedGenres.size() == 3) {
-                    Toast.makeText(context, "You cannot select more than 3!!", Toast.LENGTH_LONG).show();
-                    temp.setChecked(false);
-                }
 
-                else {
+                if (temp.isChecked()) {
+                    temp.setSelected(false);
+                    selectedGenres.remove(temp.getText().toString());
+                    tempCard.setBackgroundResource(R.drawable.cardview_genre_unselected);
+                }
+                else{
+                    temp.setSelected(true);
                     selectedGenres.add(temp.getText().toString());
                     tempCard.setBackgroundResource(R.drawable.cardview_genre_selected);
+                }
+
+                if(selectedGenres.size() == 3)
+                {
+                    next.setEnabled(true);
+                    next.setBackgroundResource(R.drawable.rounded_corner_button);
+                }
+                else if(selectedGenres.size()>3)
+                {
+                    next.setEnabled(false);
+                    next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
+                    Toast.makeText(context,"You must select exactly 3 genres",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    next.setEnabled(false);
+                    next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
+
+                }
+                for(int i =0;i<selectedGenres.size();i++)
+                {
+                    Log.d("WorkingFineSelected",selectedGenres.toString());
                 }
             }
 
@@ -147,6 +180,8 @@ public class GenreFragment extends Fragment {
             public void onLongClick(View view, int position) {
 
             }
+
+
         }));
 
         /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -156,7 +191,6 @@ public class GenreFragment extends Fragment {
                 genreSelectionAdapter.notifyDataSetChanged();
             }
         }, 3000);*/
-
         return root;
     }
 }

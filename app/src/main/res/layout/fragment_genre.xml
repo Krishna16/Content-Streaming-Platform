@@ -70,7 +70,8 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:background="@drawable/rounded_corner_button"
+            android:background="@drawable/disabled_rounded_corner_button"
+            android:enabled="false"
             android:text="NEXT"
             android:textColor="@android:color/white"
             android:id="@+id/next"/>
