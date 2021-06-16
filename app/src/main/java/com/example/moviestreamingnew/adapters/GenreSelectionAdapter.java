@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class GenreSelectionAdapter extends RecyclerView.Adapter<GenreSelectionAd
         holder.genreCheck.setText(this.genres.get(position));
         holder.genreCard.setBackgroundResource(R.drawable.cardview_genre_unselected);
 
+
         //holder.genreCheck.setTag();
 
         //User user = new User();
@@ -63,6 +65,8 @@ public class GenreSelectionAdapter extends RecyclerView.Adapter<GenreSelectionAd
     public int getItemCount() {
         return this.genres.size();
     }
+
+
 
     public class GenreViewHolder extends RecyclerView.ViewHolder {
 
