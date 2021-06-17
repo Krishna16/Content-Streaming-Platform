@@ -1,16 +1,23 @@
 package com.example.moviestreamingnew.models;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 public class User {
     private String name;
-    private List genres;
+    private List<String> genres;
     private String preference;
     private String gender;
     private String industry;
+    private String uid;
 
     private ArrayList<String> likedMovies;
 
@@ -20,7 +27,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, List genres, String preference, String gender, String industry, ArrayList<String> likedMovies) {
+    public User(String name, List<String> genres, String preference, String gender, String industry, ArrayList<String> likedMovies) {
         this.name = name;
         this.genres = genres;
         this.preference = preference;
@@ -28,10 +35,11 @@ public class User {
         this.industry = industry;
 
         this.likedMovies = likedMovies;
+        this.genres = new ArrayList<>();
     }
 
     public static synchronized User getInstance(){
-        if (null == user){
+        if (user == null){
             user = new User();
         }
 
@@ -89,5 +97,13 @@ public class User {
 
     public void setLikedMovies(ArrayList<String> likedMovies) {
         this.likedMovies = likedMovies;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }
