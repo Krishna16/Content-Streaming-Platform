@@ -34,7 +34,13 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/textView1" />
 
-
+<RadioGroup
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/radioGroup"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/textView2">
     <androidx.cardview.widget.CardView
         android:id="@+id/male_cardView"
         android:layout_width="match_parent"
@@ -166,7 +172,7 @@
             app:tint="@android:color/darker_gray" />
 
     </androidx.cardview.widget.CardView>
-
+</RadioGroup>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

@@ -1,14 +1,17 @@
 package com.example.moviestreamingnew.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class User {
     private String name;
-    private ArrayList<String> genres;
+    private List genres;
     private String preference;
     private String gender;
     private String industry;
-    private boolean formFilled;
+
     private ArrayList<String> likedMovies;
 
     //singleton instance
@@ -17,13 +20,13 @@ public class User {
     public User() {
     }
 
-    public User(String name, ArrayList<String> genres, String preference, String gender, String industry, boolean formFilled, ArrayList<String> likedMovies) {
+    public User(String name, List genres, String preference, String gender, String industry, ArrayList<String> likedMovies) {
         this.name = name;
         this.genres = genres;
         this.preference = preference;
         this.gender = gender;
         this.industry = industry;
-        this.formFilled = formFilled;
+
         this.likedMovies = likedMovies;
     }
 
@@ -43,11 +46,11 @@ public class User {
         this.name = name;
     }
 
-    public ArrayList<String> getGenres() {
+    public List<String> getGenres() {
         return genres;
     }
 
-    public void setGenres(ArrayList<String> genres) {
+    public void setGenres(List genres) {
         this.genres = genres;
     }
 
@@ -78,14 +81,6 @@ public class User {
 
     public void setIndustry(String industry) {
         this.industry = industry;
-    }
-
-    public boolean isFormFilled() {
-        return formFilled;
-    }
-
-    public void setFormFilled(boolean formFilled) {
-        this.formFilled = formFilled;
     }
 
     public ArrayList<String> getLikedMovies() {

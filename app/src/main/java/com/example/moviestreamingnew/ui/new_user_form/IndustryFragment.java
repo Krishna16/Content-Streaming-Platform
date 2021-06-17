@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.models.User;
 
 
 public class IndustryFragment extends Fragment {
@@ -27,6 +29,7 @@ public class IndustryFragment extends Fragment {
     private String mParam2;
 
     private View root;
+    private String selected;
 
     private CardView hollywoodCard, bollywoodCard;
     private RadioButton hollywoodRadio, bollywoodRadio;
@@ -72,6 +75,7 @@ public class IndustryFragment extends Fragment {
                 bollywoodRadio.setChecked(false);
                 hollywoodCard.setBackgroundResource(R.drawable.cardview_genre_selected);
                 bollywoodCard.setBackgroundResource(R.drawable.original_cardview);
+                selected = "Hollywood";
             }
         });
 
@@ -82,18 +86,27 @@ public class IndustryFragment extends Fragment {
                 hollywoodRadio.setChecked(false);
                 bollywoodCard.setBackgroundResource(R.drawable.cardview_genre_selected);
                 hollywoodCard.setBackgroundResource(R.drawable.original_cardview);
+                selected = "Bollywood";
             }
         });
 
         root.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceFragment preferenceFragment = new PreferenceFragment();
 
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, preferenceFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(!bollywoodRadio.isChecked()&&!hollywoodRadio.isChecked())
+                {
+                    Toast.makeText(root.getContext(),"Select One",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    PreferenceFragment preferenceFragment = new PreferenceFragment();
+
+                    User.getInstance().setIndustry(selected);
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, preferenceFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
 
