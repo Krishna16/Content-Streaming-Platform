@@ -44,8 +44,6 @@ public class PreferenceFragment extends Fragment {
     private RadioButton theatreRadio, ottRadio;
 
 
-
-
     public PreferenceFragment() {
         // Required empty public constructor
     }
@@ -107,19 +105,14 @@ public class PreferenceFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(!ottRadio.isChecked()&&!theatreRadio.isChecked())
+                if(!ottRadio.isChecked() && !theatreRadio.isChecked())
                 {
                     Toast.makeText(root.getContext(),"Select One",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     User.getInstance().setPreference(selected);
                     UserDatabase userDB = new UserDatabase(root.getContext());
-
-                   userDB.uploadUserData();
-
-
-
-
+                    userDB.uploadUserData();
                 }
             }
         });

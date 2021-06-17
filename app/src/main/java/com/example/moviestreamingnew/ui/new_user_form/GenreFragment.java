@@ -1,9 +1,12 @@
 package com.example.moviestreamingnew.ui.new_user_form;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -26,12 +29,15 @@ import android.widget.Toast;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.adapters.GenreSelectionAdapter;
 import com.example.moviestreamingnew.common.RecyclerTouchListener;
+import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.User;
+import com.example.moviestreamingnew.repository.ShowsDatabase;
 import com.example.moviestreamingnew.repository.Storage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -61,12 +67,19 @@ public class GenreFragment extends Fragment {
     private List<String> selectedGenres;
     private Button next;
 
+    private ShowsDatabase showsDatabase;
+
+    private ProgressDialog progressDialog;
+
+    private ShowsSharedPreferences sharedPreferences;
+
     public GenreFragment(Context context) {
         // Required empty public constructor
         this.genres = new ArrayList<>();
         this.storage = new Storage();
         this.context = context;
         this.selectedGenres = new ArrayList<String>();
+        this.showsDatabase = new ShowsDatabase();
     }
 
     /*public static GenreFragment newInstance(String param1, String param2) {
@@ -103,35 +116,29 @@ public class GenreFragment extends Fragment {
         next.setEnabled(false);
         next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
 
+        sharedPreferences = new ShowsSharedPreferences(root.getContext());
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IndustryFragment industryFragment = new IndustryFragment();
 
                 User.getInstance().setGenres(selectedGenres);
+
+                sharedPreferences.storeSelectedGenres(selectedGenres);
+
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, industryFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-
             }
         });
 
-        /*pool = Executors.newFixedThreadPool(1);
-        pool.execute(new Runnable() {
-            @Override
-            public void run() {
-                genres = storage.getGenres();
-            }
-        });
+        progressDialog = new ProgressDialog(root.getContext());
+        progressDialog.setMessage("Loading Genres...");
+        progressDialog.show();
 
-        try {
-            pool.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
-        genres = storage.getGenres();
+        genres = showsDatabase.getGenres();
 
         genreSelectionAdapter = new GenreSelectionAdapter(genres, context);
 
@@ -145,32 +152,30 @@ public class GenreFragment extends Fragment {
                 CardView tempCard = tempHolder.itemView.findViewById(R.id.genre_card);
                 CheckBox temp = tempHolder.itemView.findViewById(R.id.genre_checkbox);
 
-
-
                 if (temp.isChecked()) {
                     temp.setSelected(false);
                     selectedGenres.remove(new String(temp.getText().toString()));
                     tempCard.setBackgroundResource(R.drawable.cardview_genre_unselected);
                 }
+
                 else{
                     temp.setSelected(true);
                     selectedGenres.add(temp.getText().toString());
                     tempCard.setBackgroundResource(R.drawable.cardview_genre_selected);
                 }
 
-                if(selectedGenres.size() == 3)
-                {
+                if(selectedGenres.size() == 3) {
                     next.setEnabled(true);
                     next.setBackgroundResource(R.drawable.rounded_corner_button);
                 }
-                else if(selectedGenres.size()>3)
-                {
+
+                else if(selectedGenres.size()>3) {
                     next.setEnabled(false);
                     next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
                     Toast.makeText(context,"You must select exactly 3 genres",Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
+
+                else {
                     next.setEnabled(false);
                     next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
 
@@ -185,17 +190,16 @@ public class GenreFragment extends Fragment {
             public void onLongClick(View view, int position) {
 
             }
-
-
         }));
 
-        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(root.getContext(), "Adapter Refreshed!!", Toast.LENGTH_LONG).show();
                 genreSelectionAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
             }
-        }, 3000);*/
+        }, 1000);
+
         return root;
     }
 }

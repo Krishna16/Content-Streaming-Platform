@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,21 +21,23 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.ShowWithGenreParent;
+import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.homepage_recycler_adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
+import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
+import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.Storage;
-import com.google.android.gms.tasks.Task;
+import com.example.moviestreamingnew.repository.UserDatabase;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.transform.Result;
 
 public class HomeFragment extends Fragment{
 
@@ -47,15 +50,17 @@ public class HomeFragment extends Fragment{
     private RecyclerView showsWithGenre;
     private LinearLayoutManager linearLayoutManager;
     private ShowWithGenreAdapter showWithGenreAdapter;
-    private ArrayList<CardImageChild> cardImageSuperhero;
-    private ArrayList<CardImageChild> cardImageComedy;
-    private ArrayList<CardImageChild> cardImageScienceFiction;
+    private ArrayList<CardImageChild> images1;
+    private ArrayList<CardImageChild> images2;
+    private ArrayList<CardImageChild> images3;
     private ArrayList<ShowWithGenreParent> showWithGenreParents;
     private Storage storage;
     private ExecutorService pool;
+    private ExecutorService pool1;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<Future<Result>> resultList = null;
-    private List<Task> taskList;
+    private UserDatabase userDatabase;
+    private ArrayList<String> selectedGenres;
+    private ShowsSharedPreferences showsSharedPreferences;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -64,19 +69,33 @@ public class HomeFragment extends Fragment{
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         showWithGenreParents = new ArrayList<>();
-        cardImageSuperhero = new ArrayList<>();
-        cardImageComedy = new ArrayList<>();
-        cardImageScienceFiction = new ArrayList<>();
+        images1 = new ArrayList<>();
+        images2 = new ArrayList<>();
+        images3 = new ArrayList<>();
+        selectedGenres = new ArrayList<>();
 
         storage = new Storage(root.getContext());
+
+        userDatabase = new UserDatabase(root.getContext());
+
+        showsSharedPreferences = new ShowsSharedPreferences(root.getContext());
+
+        selectedGenres = showsSharedPreferences.getStoredGenres();
+
+        if (selectedGenres.size() <= 0){
+            userDatabase.getSelectedGenres();
+            selectedGenres = showsSharedPreferences.getStoredGenres();
+        }
+
+        Log.d("HomeFragment", "Selected Genres: " + selectedGenres.size());
 
         pool = Executors.newFixedThreadPool(3);
         pool.execute(new Runnable() {
             @Override
             public void run() {
-                cardImageSuperhero = storage.downloadSuperheroMovieImages();
-                cardImageComedy = storage.downloadComedyMovieImages();
-                cardImageScienceFiction = storage.downloadScienceFictionImages();
+                images1 = storage.downloadMovieImages(selectedGenres.get(0));
+                images2 = storage.downloadMovieImages(selectedGenres.get(1));
+                images3 = storage.downloadMovieImages(selectedGenres.get(2));
             }
         });
 
@@ -86,11 +105,13 @@ public class HomeFragment extends Fragment{
             e.printStackTrace();
         }
 
-        //imagesViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance();
+        showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(0), images1));
+        showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(1), images2));
+        showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(2), images3));
 
-        showWithGenreParents.add(new ShowWithGenreParent("Superhero", cardImageSuperhero));
-        showWithGenreParents.add(new ShowWithGenreParent("Comedy", cardImageComedy));
-        showWithGenreParents.add(new ShowWithGenreParent("Science Fiction", cardImageScienceFiction));
+        Log.d("HomeFragment", "Images 1: " + images1.size());
+        Log.d("HomeFragment", "Images 2: " + images2.size());
+        Log.d("HomeFragment", "Images 3: " + images3.size());
 
         linearLayoutManager = new LinearLayoutManager(root.getContext());
         showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());
@@ -110,7 +131,6 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        //Snackbar.make(root.findViewById(R.id.pull_to_refresh_layout), "If the images haven't loaded, pull down to refresh", Snackbar.LENGTH_LONG).show();
         Toast.makeText(root.getContext(), "Loading...", Toast.LENGTH_LONG).show();
 
         SwipeRefreshLayout.OnRefreshListener swipeRefreshListner = new SwipeRefreshLayout.OnRefreshListener() {
