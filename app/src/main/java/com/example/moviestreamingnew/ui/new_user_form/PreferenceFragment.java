@@ -1,16 +1,29 @@
 package com.example.moviestreamingnew.ui.new_user_form;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.example.moviestreamingnew.NavigationActivity;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.models.User;
+import com.example.moviestreamingnew.repository.UserDatabase;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.sql.StatementEvent;
 
 
 public class PreferenceFragment extends Fragment {
@@ -26,8 +39,12 @@ public class PreferenceFragment extends Fragment {
 
     private View root;
 
+    private String selected;
     private CardView theatreCard, ottCard;
     private RadioButton theatreRadio, ottRadio;
+
+
+
 
     public PreferenceFragment() {
         // Required empty public constructor
@@ -71,6 +88,7 @@ public class PreferenceFragment extends Fragment {
                 ottRadio.setChecked(false);
                 theatreCard.setBackgroundResource(R.drawable.cardview_genre_selected);
                 ottCard.setBackgroundResource(R.drawable.original_cardview);
+                selected = "Theatre";
             }
         });
 
@@ -81,6 +99,7 @@ public class PreferenceFragment extends Fragment {
                 theatreRadio.setChecked(false);
                 ottCard.setBackgroundResource(R.drawable.cardview_genre_selected);
                 theatreCard.setBackgroundResource(R.drawable.original_cardview);
+                selected="OTT";
             }
         });
 
@@ -88,6 +107,20 @@ public class PreferenceFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                if(!ottRadio.isChecked()&&!theatreRadio.isChecked())
+                {
+                    Toast.makeText(root.getContext(),"Select One",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    User.getInstance().setPreference(selected);
+                    UserDatabase userDB = new UserDatabase(root.getContext());
+
+                   userDB.uploadUserData();
+
+
+
+
+                }
             }
         });
 

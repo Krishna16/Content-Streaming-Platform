@@ -26,10 +26,12 @@ import android.widget.Toast;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.adapters.GenreSelectionAdapter;
 import com.example.moviestreamingnew.common.RecyclerTouchListener;
+import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.Storage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -56,7 +58,7 @@ public class GenreFragment extends Fragment {
 
     private Context context;
 
-    private Set selectedGenres;
+    private List<String> selectedGenres;
     private Button next;
 
     public GenreFragment(Context context) {
@@ -64,7 +66,7 @@ public class GenreFragment extends Fragment {
         this.genres = new ArrayList<>();
         this.storage = new Storage();
         this.context = context;
-        this.selectedGenres = new HashSet();
+        this.selectedGenres = new ArrayList<String>();
     }
 
     /*public static GenreFragment newInstance(String param1, String param2) {
@@ -106,10 +108,12 @@ public class GenreFragment extends Fragment {
             public void onClick(View v) {
                 IndustryFragment industryFragment = new IndustryFragment();
 
+                User.getInstance().setGenres(selectedGenres);
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, industryFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+
             }
         });
 
@@ -142,9 +146,10 @@ public class GenreFragment extends Fragment {
                 CheckBox temp = tempHolder.itemView.findViewById(R.id.genre_checkbox);
 
 
+
                 if (temp.isChecked()) {
                     temp.setSelected(false);
-                    selectedGenres.remove(temp.getText().toString());
+                    selectedGenres.remove(new String(temp.getText().toString()));
                     tempCard.setBackgroundResource(R.drawable.cardview_genre_unselected);
                 }
                 else{
@@ -170,9 +175,9 @@ public class GenreFragment extends Fragment {
                     next.setBackgroundResource(R.drawable.disabled_rounded_corner_button);
 
                 }
-                for(int i =0;i<selectedGenres.size();i++)
-                {
-                    Log.d("WorkingFineSelected",selectedGenres.toString());
+
+                for(int i =0;i<selectedGenres.size();i++) {
+                    Log.d("WorkingFineSelected", selectedGenres.get(i));
                 }
             }
 

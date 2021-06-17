@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.models.User;
 
 
 public class GenderFragment extends Fragment {
@@ -31,6 +34,8 @@ public class GenderFragment extends Fragment {
     private Context context;
     private View root;
 
+
+    private String genderSelected;
     private RadioButton maleButton;
     private RadioButton femaleButton;
     private RadioButton preferButton;
@@ -60,6 +65,7 @@ public class GenderFragment extends Fragment {
         this.male_text = root.findViewById(R.id.male_textView);
         this.male_text.bringToFront();
 
+
         this.female_text = root.findViewById(R.id.female_textView);
         this.female_text.bringToFront();
 
@@ -71,12 +77,14 @@ public class GenderFragment extends Fragment {
         this.female_cardView = root.findViewById(R.id.female_cardView);
         this.prefer_cardView = root.findViewById(R.id.prefer_cardView);
 
+
         male_cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 maleButton.setChecked(true);
                 femaleButton.setChecked(false);
                 preferButton.setChecked(false);
+                genderSelected = "Male";
             }
         });
 
@@ -86,6 +94,7 @@ public class GenderFragment extends Fragment {
                 femaleButton.setChecked(true);
                 maleButton.setChecked(false);
                 preferButton.setChecked(false);
+                genderSelected = "Female";
             }
         });
 
@@ -95,6 +104,7 @@ public class GenderFragment extends Fragment {
                 preferButton.setChecked(true);
                 maleButton.setChecked(false);
                 femaleButton.setChecked(false);
+                genderSelected = "Prefer Not to Say";
             }
         });
 
@@ -103,15 +113,22 @@ public class GenderFragment extends Fragment {
             public void onClick(View v) {
                 GenreFragment genreFragment = new GenreFragment(root.getContext());
 
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, genreFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if(!maleButton.isChecked()&&!femaleButton.isChecked()&&!preferButton.isChecked()) {
+                    Toast.makeText(context,"Select One",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    User.getInstance().setGender(genderSelected);
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, genreFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
 
         maleButton.bringToFront();
         femaleButton.bringToFront();
+        preferButton.bringToFront();
 
         return root;
     }
