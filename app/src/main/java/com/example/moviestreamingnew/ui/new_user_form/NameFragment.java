@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.models.User;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 public class NameFragment extends Fragment {
@@ -33,8 +31,6 @@ public class NameFragment extends Fragment {
     private Context context;
     private View root;
     private Button next;
-
-
 
     public NameFragment(Context context) {
         // Required empty public constructor

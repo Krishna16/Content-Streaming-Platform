@@ -25,16 +25,12 @@ import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.homepage_recycler_adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
 import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
-import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.Storage;
 import com.example.moviestreamingnew.repository.UserDatabase;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +52,6 @@ public class HomeFragment extends Fragment{
     private ArrayList<ShowWithGenreParent> showWithGenreParents;
     private Storage storage;
     private ExecutorService pool;
-    private ExecutorService pool1;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UserDatabase userDatabase;
     private ArrayList<String> selectedGenres;
@@ -82,12 +77,12 @@ public class HomeFragment extends Fragment{
 
         selectedGenres = showsSharedPreferences.getStoredGenres();
 
-        if (selectedGenres.size() <= 0){
+        if (selectedGenres.get(0) == null){
             userDatabase.getSelectedGenres();
             selectedGenres = showsSharedPreferences.getStoredGenres();
         }
 
-        Log.d("HomeFragment", "Selected Genres: " + selectedGenres.size());
+        //Log.d("HomeFragment", "Selected Genres: " + selectedGenres.size());
 
         pool = Executors.newFixedThreadPool(3);
         pool.execute(new Runnable() {
@@ -109,9 +104,11 @@ public class HomeFragment extends Fragment{
         showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(1), images2));
         showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(2), images3));
 
-        Log.d("HomeFragment", "Images 1: " + images1.size());
-        Log.d("HomeFragment", "Images 2: " + images2.size());
-        Log.d("HomeFragment", "Images 3: " + images3.size());
+        //Log.d("HomeFragment", selectedGenres.get(0));
+
+        //Log.d("HomeFragment", "Images 1: " + images1.size());
+        //Log.d("HomeFragment", "Images 2: " + images2.size());
+        //Log.d("HomeFragment", "Images 3: " + images3.size());
 
         linearLayoutManager = new LinearLayoutManager(root.getContext());
         showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());

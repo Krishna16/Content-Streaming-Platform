@@ -10,16 +10,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.moviestreamingnew.NavigationActivity;
-import com.example.moviestreamingnew.account.Login;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
 import com.example.moviestreamingnew.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -78,7 +75,7 @@ public class UserDatabase {
     }
 
     public void getSelectedGenres(){
-        ValueEventListener genresListener = new ValueEventListener() {
+        /*ValueEventListener genresListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Iterable<DataSnapshot> genresSnapshot = snapshot.getChildren();
@@ -98,9 +95,21 @@ public class UserDatabase {
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("UserDatabase: ", error.getMessage());
             }
-        };
+        };*/
 
-        databaseReference.child("users").child(User.getInstance().getUid()).child("genres").addValueEventListener(genresListener);
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("genres").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> genresSnapshot = dataSnapshot.getChildren();
+
+                for(DataSnapshot genre: genresSnapshot){
+                    Log.d("UserDatabase: ", genre.getValue().toString());
+                    genres.add(genre.getValue().toString());
+                }
+
+                showsSharedPreferences.storeSelectedGenres(genres);
+            }
+        });
     }
 
     /*public void readData(DatabaseReference ref, final OnFirebaseDataRead listener) {

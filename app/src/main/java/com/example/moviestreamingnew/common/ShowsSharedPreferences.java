@@ -3,7 +3,6 @@ package com.example.moviestreamingnew.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

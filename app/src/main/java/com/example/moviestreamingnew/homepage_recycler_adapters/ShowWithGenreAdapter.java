@@ -15,7 +15,6 @@ import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.ShowWithGenreParent;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShowWithGenreAdapter extends RecyclerView.Adapter<ShowWithGenreAdapter.ShowViewHolder> {
 

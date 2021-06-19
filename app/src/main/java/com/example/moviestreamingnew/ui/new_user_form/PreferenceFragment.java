@@ -1,29 +1,19 @@
 package com.example.moviestreamingnew.ui.new_user_form;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.example.moviestreamingnew.NavigationActivity;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.UserDatabase;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javax.sql.StatementEvent;
 
 
 public class PreferenceFragment extends Fragment {
@@ -47,15 +37,6 @@ public class PreferenceFragment extends Fragment {
     public PreferenceFragment() {
         // Required empty public constructor
     }
-
-    /*public static PreferenceFragment newInstance(String param1, String param2) {
-        PreferenceFragment fragment = new PreferenceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
