@@ -30,7 +30,9 @@ import com.example.moviestreamingnew.repository.Storage;
 import com.example.moviestreamingnew.repository.UserDatabase;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -61,6 +63,9 @@ public class HomeFragment extends Fragment{
     private UserDatabase userDatabase;
     private ArrayList<String> selectedGenres;
     private ShowsSharedPreferences showsSharedPreferences;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private List<String> genres;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -79,39 +84,86 @@ public class HomeFragment extends Fragment{
         userDatabase = new UserDatabase(root.getContext());
 
         showsSharedPreferences = new ShowsSharedPreferences(root.getContext());
-
         selectedGenres = showsSharedPreferences.getStoredGenres();
 
-        if (selectedGenres.size() <= 0){
-            userDatabase.getSelectedGenres();
-            selectedGenres = showsSharedPreferences.getStoredGenres();
+
+        Log.d("HomeFragment","Selected Genres size is : " + selectedGenres.size());
+        if (selectedGenres.get(0) == null){
+            Log.d("HomeFragment","If Condition run");
+            userDatabase.readData(databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("genres"), new OnFirebaseDataRead() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+
+                    genres = new ArrayList<>();
+                    for (DataSnapshot genre: dataSnapshot.getChildren()){
+                        Log.d("HomeFragment: ", genre.getValue().toString());
+                        genres.add(genre.getValue().toString());
+                    }
+                    showsSharedPreferences.storeSelectedGenres(genres);
+                    pool = Executors.newFixedThreadPool(3);
+
+                    pool.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            selectedGenres = showsSharedPreferences.getStoredGenres();
+                            images1 = storage.downloadMovieImages(selectedGenres.get(0));
+                            images2 = storage.downloadMovieImages(selectedGenres.get(1));
+                            images3 = storage.downloadMovieImages(selectedGenres.get(2));
+
+                        }
+                    });
+                    try {
+                        pool.awaitTermination(3000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onStart() {
+                    Toast.makeText(root.getContext(),"Fetching Data Please Wait",Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure() {
+                    Toast.makeText(root.getContext(),"Some Failure Occured",Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
         }
+        else {
 
-        Log.d("HomeFragment", "Selected Genres: " + selectedGenres.size());
+            Log.d("HomeFragment", "Selected Genres: " + selectedGenres.size());
 
-        pool = Executors.newFixedThreadPool(3);
-        pool.execute(new Runnable() {
-            @Override
-            public void run() {
-                images1 = storage.downloadMovieImages(selectedGenres.get(0));
-                images2 = storage.downloadMovieImages(selectedGenres.get(1));
-                images3 = storage.downloadMovieImages(selectedGenres.get(2));
+            pool = Executors.newFixedThreadPool(3);
+
+            pool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    selectedGenres = showsSharedPreferences.getStoredGenres();
+                    images1 = storage.downloadMovieImages(selectedGenres.get(0));
+                    images2 = storage.downloadMovieImages(selectedGenres.get(1));
+                    images3 = storage.downloadMovieImages(selectedGenres.get(2));
+                    
+                }
+            });
+            try {
+                pool.awaitTermination(3000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
 
-        try {
-            pool.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+        Log.d("HomeFragment", "Images 1: " + images1.size());
+        Log.d("HomeFragment", "Images 2: " + images2.size());
+        Log.d("HomeFragment", "Images 3: " + images3.size());
+
 
         showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(0), images1));
         showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(1), images2));
         showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(2), images3));
 
-        Log.d("HomeFragment", "Images 1: " + images1.size());
-        Log.d("HomeFragment", "Images 2: " + images2.size());
-        Log.d("HomeFragment", "Images 3: " + images3.size());
 
         linearLayoutManager = new LinearLayoutManager(root.getContext());
         showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());
@@ -165,14 +217,20 @@ public class HomeFragment extends Fragment{
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                new CountDownTimer(2000, 1000) {
+                new CountDownTimer(1000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         swipeRefreshLayout.post(new Runnable() {
                             @Override
                             public void run() {
+
                                 swipeRefreshLayout.setRefreshing(true);
+
                                 swipeRefreshListner.onRefresh();
+
+
+
+
                             }
                         });
                     }
@@ -182,7 +240,7 @@ public class HomeFragment extends Fragment{
                     }
                 }.start();
             }
-        }, 3000);
+        }, 2000);
 
         return root;
     }

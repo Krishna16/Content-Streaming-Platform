@@ -10,19 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.moviestreamingnew.NavigationActivity;
-import com.example.moviestreamingnew.account.Login;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
 import com.example.moviestreamingnew.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,30 +73,66 @@ public class UserDatabase {
         });
     }
 
-    public void getSelectedGenres(){
-        ValueEventListener genresListener = new ValueEventListener() {
+    public boolean getSelectedGenres(){
+//        ValueEventListener genresListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Iterable<DataSnapshot> genresSnapshot = snapshot.getChildren();
+//
+//                Log.d("UserDatabase: ", "Outside for loop");
+//
+//                for (DataSnapshot genre: genresSnapshot){
+//                    //Log.d("UserDatabase: ", genre.getValue().toString());
+//                    genres.add(genre.getValue().toString());
+//                }
+//
+//                Log.d("UserDatabase: ", "for loop executed");
+//                showsSharedPreferences.storeSelectedGenres(genres);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.d("UserDatabase: ", error.getMessage());
+//            }
+//        };
+
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("genres").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterable<DataSnapshot> genresSnapshot = snapshot.getChildren();
-
-                Log.d("UserDatabase: ", "Outside for loop");
-
-                for (DataSnapshot genre: genresSnapshot){
-                    //Log.d("UserDatabase: ", genre.getValue().toString());
-                    genres.add(genre.getValue().toString());
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Log.d("OnSuccess","Data is : "+ dataSnapshot.getValue().toString());
+                if (dataSnapshot.hasChildren())
+                {
+                    Log.d("OnSuccess","true");
                 }
+                else
+                {
+                    Log.d("OnSuccess","False");
+                }
+                for (DataSnapshot genre: dataSnapshot.getChildren()){
+                    Log.d("HomeFragment: ", genre.getValue().toString());
+                    genres.add(genre.getValue().toString());
 
-                Log.d("UserDatabase: ", "for loop executed");
+                }
                 showsSharedPreferences.storeSelectedGenres(genres);
-            }
 
+            }
+        });
+        return true;
+    }
+    public void readData(DatabaseReference ref, final OnFirebaseDataRead listener) {
+        listener.onStart();
+        ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("UserDatabase: ", error.getMessage());
-            }
-        };
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
 
-        databaseReference.child("users").child(User.getInstance().getUid()).child("genres").addValueEventListener(genresListener);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                listener.onFailure();
+            }
+        });
     }
 
     /*public void readData(DatabaseReference ref, final OnFirebaseDataRead listener) {

@@ -10,8 +10,11 @@ import androidx.annotation.NonNull;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.ShowWithGenreParent;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
+import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -27,27 +30,28 @@ public class Storage {
     private ArrayList<CardImageChild> scienceFictionImages;
     private Context context;
     private ArrayList<String> genres;
-    private ArrayList<CardImageChild> allGenres;
 
-    public Storage(){
+
+    public Storage() {
         this.firebaseStorage = FirebaseStorage.getInstance();
         this.superheroImages = new ArrayList<>();
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
         this.genres = new ArrayList<>();
-        this.allGenres = new ArrayList<>();
+
     }
 
-    public Storage(Context context){
+
+    public Storage(Context context) {
         this.firebaseStorage = FirebaseStorage.getInstance();
         this.superheroImages = new ArrayList<>();
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
         this.context = context;
-        this.allGenres = new ArrayList<>();
+
     }
 
-    public ArrayList<CardImageChild> downloadHollywoodSuperheroMovieImages(){
+    public ArrayList<CardImageChild> downloadHollywoodSuperheroMovieImages() {
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference superhero = storageReference.child("images/Superhero/Hollywood");
 
@@ -58,7 +62,7 @@ public class Storage {
         superhero.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item: listResult.getItems()){
+                for (StorageReference item : listResult.getItems()) {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -130,14 +134,14 @@ public class Storage {
         return superheroImages;
     }
 
-    public ArrayList<CardImageChild> downloadHollywoodComedyMovieImages(){
+    public ArrayList<CardImageChild> downloadHollywoodComedyMovieImages() {
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference comedy = storageReference.child("images/Comedy/Hollywood");
 
         comedy.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item: listResult.getItems()){
+                for (StorageReference item : listResult.getItems()) {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -234,14 +238,14 @@ public class Storage {
         return comedyImages;
     }
 
-    public ArrayList<CardImageChild> downloadHollywoodScienceFictionImages(){
+    public ArrayList<CardImageChild> downloadHollywoodScienceFictionImages() {
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference scienceFiction = storageReference.child("images/Science Fiction/Hollywood");
 
         scienceFiction.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item: listResult.getItems()){
+                for (StorageReference item : listResult.getItems()) {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -283,20 +287,28 @@ public class Storage {
         return scienceFictionImages;
     }
 
-    public ArrayList<CardImageChild> downloadMovieImages(String genre){
+    public ArrayList<CardImageChild> downloadMovieImages(String genre) {
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference hollywood = storageReference.child("images/" + genre + "/Hollywood");
         StorageReference bollywood = storageReference.child("images/" + genre + "/Bollywood");
 
+        ArrayList<CardImageChild> allGenres = new ArrayList<>();
         hollywood.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item: listResult.getItems()){
+                for (StorageReference item : listResult.getItems()) {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             CardImageChild cardTemp = new CardImageChild(uri.toString());
                             allGenres.add(cardTemp);
+
+                            Log.d("HomeFragment", "Downloaded URI is " + uri.toString());
+                            Log.d("HomeFragment", "Size of allGenres is " + allGenres.size());
+                            for (int i = 0; i < allGenres.size(); i++) {
+                                Log.d("HomeFragment", "All genres array is : " + allGenres.get(i));
+                            }
+
                         }
                     });
                 }
@@ -311,12 +323,16 @@ public class Storage {
         bollywood.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                for (StorageReference item: listResult.getItems()){
+                for (StorageReference item : listResult.getItems()) {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             CardImageChild cardTemp = new CardImageChild(uri.toString());
                             allGenres.add(cardTemp);
+
+
+                            Log.d("StorageClass", "Downloaded URI is " + uri.toString());
+
                         }
                     });
                 }
@@ -328,6 +344,9 @@ public class Storage {
             }
         });
 
+
         return allGenres;
     }
+
+
 }
