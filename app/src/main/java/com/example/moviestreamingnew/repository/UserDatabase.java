@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.moviestreamingnew.NavigationActivity;
+import com.example.moviestreamingnew.SplashActivity;
+import com.example.moviestreamingnew.account.NewUserForm;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
 import com.example.moviestreamingnew.models.User;
@@ -17,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -62,14 +65,12 @@ public class UserDatabase {
                 Intent i = new Intent(context, NavigationActivity.class);
                 context.startActivity(i);
                 ((Activity) context).finish();
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
                 Toast.makeText(context, "Error Creating Profile!!", Toast.LENGTH_LONG).show();
-
             }
         });
     }
@@ -110,6 +111,34 @@ public class UserDatabase {
                 showsSharedPreferences.storeSelectedGenres(genres);
             }
         });
+    }
+
+    public boolean doesUserExist(){
+        final boolean[] exists = {false};
+
+        if (mAuth.getCurrentUser() != null){
+            DatabaseReference uidReference = databaseReference.child("users").child(mAuth.getCurrentUser().getUid());
+
+            ValueEventListener eventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        exists[0] = false;
+                    } else {
+                        exists[0] = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+
+            uidReference.addListenerForSingleValueEvent(eventListener);
+        }
+
+        return exists[0];
     }
 
     /*public void readData(DatabaseReference ref, final OnFirebaseDataRead listener) {

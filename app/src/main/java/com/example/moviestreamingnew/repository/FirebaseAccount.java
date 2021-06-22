@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.moviestreamingnew.NavigationActivity;
+import com.example.moviestreamingnew.account.NewUserForm;
 import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +50,7 @@ public class FirebaseAccount {
 
                             Toast.makeText(context, "User successfully registered!!", Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(context, NavigationActivity.class);
+                            Intent intent = new Intent(context, NewUserForm.class);
                             context.startActivity(intent);
                             ((Activity) context).finish();
                         } else {
@@ -77,9 +78,17 @@ public class FirebaseAccount {
                             FirebaseUser user = mAuth.getCurrentUser();
                             progressDialog.dismiss();
 
-                            Intent intent = new Intent(context, NavigationActivity.class);
-                            context.startActivity(intent);
-                            ((Activity) context).finish();
+                            if (new UserDatabase().doesUserExist()){
+                                Intent intent = new Intent(context, NavigationActivity.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
+
+                            else{
+                                Intent intent = new Intent(context, NewUserForm.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("SignInWithEmail", "signInWithEmail:failure", task.getException());
@@ -103,9 +112,17 @@ public class FirebaseAccount {
                             Log.d("Login", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            Intent intent = new Intent(context, NavigationActivity.class);
-                            context.startActivity(intent);
-                            ((Activity) context).finish();
+                            if (new UserDatabase().doesUserExist()){
+                                Intent intent = new Intent(context, NavigationActivity.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
+
+                            else{
+                                Intent intent = new Intent(context, NewUserForm.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("Login", "signInWithCredential:failure", task.getException());
@@ -131,9 +148,17 @@ public class FirebaseAccount {
 
                             isSuccess = true;
 
-                            Intent intent = new Intent(context, NavigationActivity.class);
-                            context.startActivity(intent);
-                            ((Activity) context).finish();
+                            if (new UserDatabase().doesUserExist()){
+                                Intent intent = new Intent(context, NavigationActivity.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
+
+                            else{
+                                Intent intent = new Intent(context, NewUserForm.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("Login", "signInWithCredential:failure", task.getException());

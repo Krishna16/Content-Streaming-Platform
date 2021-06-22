@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.ShowWithGenreParent;
+import com.example.moviestreamingnew.common.RecyclerTouchListener;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.homepage_recycler_adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.homepage_recycler_adapters.ShowWithGenreAdapter;
@@ -130,7 +132,7 @@ public class HomeFragment extends Fragment{
 
         Toast.makeText(root.getContext(), "Loading...", Toast.LENGTH_LONG).show();
 
-        SwipeRefreshLayout.OnRefreshListener swipeRefreshListner = new SwipeRefreshLayout.OnRefreshListener() {
+        SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 showWithGenreAdapter.notifyDataSetChanged();
@@ -169,7 +171,7 @@ public class HomeFragment extends Fragment{
                             @Override
                             public void run() {
                                 swipeRefreshLayout.setRefreshing(true);
-                                swipeRefreshListner.onRefresh();
+                                swipeRefreshListener.onRefresh();
                             }
                         });
                     }

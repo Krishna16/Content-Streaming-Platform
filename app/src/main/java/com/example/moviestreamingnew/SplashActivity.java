@@ -7,10 +7,14 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.moviestreamingnew.account.Login;
 import com.example.moviestreamingnew.account.NewUserForm;
+import com.example.moviestreamingnew.common.NetworkCheck;
 import com.example.moviestreamingnew.models.User;
+import com.example.moviestreamingnew.ui.description.DescriptionFragment;
+import com.example.moviestreamingnew.ui.new_user_form.NameFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private int splashTime = 1500;
+    private int splashTime = 1000;
     private FirebaseAuth mAuth;
     private DatabaseReference firebaseDatabase;
 
@@ -35,40 +39,44 @@ public class SplashActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mAuth.getCurrentUser() != null){
-                    User.getInstance().setUid(mAuth.getCurrentUser().getUid());
+                if (NetworkCheck.networkCheck(SplashActivity.this)) {
+                    if (mAuth.getCurrentUser() != null) {
+                        User.getInstance().setUid(mAuth.getCurrentUser().getUid());
 
-                    DatabaseReference uidReference = firebaseDatabase.child("users").child(User.getInstance().getUid());
+                        DatabaseReference uidReference = firebaseDatabase.child("users").child(User.getInstance().getUid());
 
-                    ValueEventListener eventListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (!snapshot.exists()){
-                                Intent i = new Intent(SplashActivity.this, NewUserForm.class);
-                                startActivity(i);
-                                finish();
+                        ValueEventListener eventListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) {
+                                    Intent i = new Intent(SplashActivity.this, NewUserForm.class);
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
+                                    startActivity(i);
+                                    finish();
+                                }
                             }
 
-                            else{
-                                Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
-                                startActivity(i);
-                                finish();
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
                             }
-                        }
+                        };
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                        uidReference.addListenerForSingleValueEvent(eventListener);
+                    }
 
-                        }
-                    };
-
-                    uidReference.addListenerForSingleValueEvent(eventListener);
+                    else {
+                        Intent i = new Intent(SplashActivity.this, Login.class);
+                        startActivity(i);
+                        finish();
+                    }
                 }
 
-                else {
-                    Intent i = new Intent(SplashActivity.this, Login.class);
-                    startActivity(i);
-                    finish();
+                else{
+
                 }
             }
         }, splashTime);

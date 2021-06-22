@@ -1,13 +1,17 @@
 package com.example.moviestreamingnew.homepage_recycler_adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 
 import java.util.List;
 
@@ -63,6 +68,25 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.cardImage);
+
+        holder.cardImage.setTag(childItem.getImage());
+
+        holder.cardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(context, "Clicked on: " + holder.cardImage.getTag(), Toast.LENGTH_LONG).show();
+                //Log.d("CardImageAdapter", "Clicked on: " + holder.cardImage.getTag());
+
+                DescriptionFragment descriptionFragment = new DescriptionFragment();
+
+                FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, descriptionFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+                Log.d("CardImageAdapter", holder.cardImage.getTag().toString());
+            }
+        });
     }
 
     @Override

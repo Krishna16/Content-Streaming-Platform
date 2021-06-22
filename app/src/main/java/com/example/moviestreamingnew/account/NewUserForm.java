@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 import com.example.moviestreamingnew.ui.new_user_form.NameFragment;
 
 public class NewUserForm extends AppCompatActivity {

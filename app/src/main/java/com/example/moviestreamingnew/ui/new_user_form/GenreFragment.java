@@ -32,6 +32,8 @@ import com.example.moviestreamingnew.repository.Storage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class GenreFragment extends Fragment {
 
@@ -49,10 +51,7 @@ public class GenreFragment extends Fragment {
     private GridLayoutManager gridLayoutManager;
 
     private ArrayList<String> genres;
-    private Storage storage;
     private GenreSelectionAdapter genreSelectionAdapter;
-
-    private ExecutorService pool;
 
     private Context context;
 
@@ -65,10 +64,11 @@ public class GenreFragment extends Fragment {
 
     private ShowsSharedPreferences sharedPreferences;
 
+    private ExecutorService pool;
+
     public GenreFragment(Context context) {
         // Required empty public constructor
         this.genres = new ArrayList<>();
-        this.storage = new Storage();
         this.context = context;
         this.selectedGenres = new ArrayList<String>();
         this.showsDatabase = new ShowsDatabase();
@@ -117,11 +117,26 @@ public class GenreFragment extends Fragment {
             }
         });
 
+        pool = Executors.newFixedThreadPool(1);
+
         progressDialog = new ProgressDialog(root.getContext());
         progressDialog.setMessage("Loading Genres...");
         progressDialog.show();
 
-        genres = showsDatabase.getGenres();
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                genres = showsDatabase.getGenres();
+            }
+        });
+
+        try {
+            pool.awaitTermination(500, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("GenreFragment", "Genres size: " + genres.size());
 
         genreSelectionAdapter = new GenreSelectionAdapter(genres, context);
 
