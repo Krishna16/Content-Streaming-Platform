@@ -71,7 +71,7 @@ public class GenreFragment extends Fragment {
         this.genres = new ArrayList<>();
         this.context = context;
         this.selectedGenres = new ArrayList<String>();
-        this.showsDatabase = new ShowsDatabase();
+        this.showsDatabase = new ShowsDatabase(context);
     }
 
     @Override

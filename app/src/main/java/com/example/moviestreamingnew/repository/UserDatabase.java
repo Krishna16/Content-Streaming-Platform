@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -113,32 +116,25 @@ public class UserDatabase {
         });
     }
 
-    public boolean doesUserExist(){
-        final boolean[] exists = {false};
+    public void doesUserExist(){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Log.d("DataSnapshot exists: ", "" + dataSnapshot.exists());
 
-        if (mAuth.getCurrentUser() != null){
-            DatabaseReference uidReference = databaseReference.child("users").child(mAuth.getCurrentUser().getUid());
-
-            ValueEventListener eventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        exists[0] = false;
-                    } else {
-                        exists[0] = true;
-                    }
+                if (dataSnapshot.exists()){
+                    Intent intent = new Intent(context, NavigationActivity.class);
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
+                else{
+                    Intent intent = new Intent(context, NewUserForm.class);
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
                 }
-            };
-
-            uidReference.addListenerForSingleValueEvent(eventListener);
-        }
-
-        return exists[0];
+            }
+        });
     }
 
     /*public void readData(DatabaseReference ref, final OnFirebaseDataRead listener) {

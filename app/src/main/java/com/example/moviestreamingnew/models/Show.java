@@ -1,5 +1,7 @@
 package com.example.moviestreamingnew.models;
 
+import android.app.Application;
+
 public class Show {
     private String name;
     private double rating;
@@ -7,8 +9,19 @@ public class Show {
     private int likes;
     private String description;
     private String genre;
+    private String imageUrl;
+
+    //singleton instance
+    private static Show show = null;
 
     public Show() {
+        this.name = "";
+        this.rating = 0;
+        this.episodes = 0;
+        this.likes = 0;
+        this.description = "";
+        this.genre = "";
+        this.imageUrl = "";
     }
 
     public Show(String name, double rating, int episodes, int likes, String description) {
@@ -17,6 +30,14 @@ public class Show {
         this.episodes = episodes;
         this.likes = likes;
         this.description = description;
+    }
+
+    public static synchronized Show getInstance(){
+        if (show == null){
+            show = new Show();
+        }
+
+        return show;
     }
 
     public String getName() {
@@ -65,5 +86,19 @@ public class Show {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setGenre(String [] genres){
+        for (int i = 0; i < genres.length; i++){
+            this.genre += genres[i] + ", ";
+        }
     }
 }

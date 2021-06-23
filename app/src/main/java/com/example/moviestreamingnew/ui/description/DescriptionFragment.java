@@ -7,14 +7,20 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.models.Show;
 import com.example.moviestreamingnew.ui.episodes.EpisodeFragment;
+import com.example.moviestreamingnew.ui.home.HomeFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -35,8 +41,16 @@ public class DescriptionFragment extends Fragment {
 
     private TabLayout episodeTab;
 
+    private ImageView image;
+    private String imageUrl;
+    private TextView title, rating, likes;
+
     public DescriptionFragment() {
         // Required empty public constructor
+    }
+
+    public DescriptionFragment(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -55,6 +69,21 @@ public class DescriptionFragment extends Fragment {
         // Inflate the layout for this fragment
 
         this.description = root.findViewById(R.id.show_description);
+        this.image = root.findViewById(R.id.show_image);
+        this.title = root.findViewById(R.id.show_title);
+        this.rating = root.findViewById(R.id.show_rating);
+        this.likes = root.findViewById(R.id.number_of_likes);
+
+        Glide.with(root.getContext())
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(image);
+
+        description.setText(Show.getInstance().getDescription());
+        title.setText(Show.getInstance().getName());
+        rating.setText("Rating: " + Show.getInstance().getRating() + "/10");
+        likes.setText("" + Show.getInstance().getLikes());
 
         description.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +95,7 @@ public class DescriptionFragment extends Fragment {
         });
 
         this.episodeTab = root.findViewById(R.id.episode_tab);
-        episodeTab.addTab(episodeTab.newTab().setText("Episodes(24)"));
+        episodeTab.addTab(episodeTab.newTab().setText("Episodes(" + Show.getInstance().getEpisodes() + ")"));
         episodeTab.addTab(episodeTab.newTab().setText("More Details"));
         episodeTab.setTabTextColors(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
 
@@ -103,9 +132,25 @@ public class DescriptionFragment extends Fragment {
 
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.replace(R.id.tab_fragment_container, episodeFragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         }
+
+        root.setFocusableInTouchMode(true);
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK){
+                    HomeFragment homeFragment = new HomeFragment();
+
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, homeFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+
+                return true;
+            }
+        });
 
         return root;
     }

@@ -1,12 +1,21 @@
 package com.example.moviestreamingnew.repository;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.models.Show;
+import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,17 +29,21 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Objects;
 
 public class ShowsDatabase {
     private DatabaseReference databaseReference;
-    private DatabaseReference showsReference;
     private ArrayList<String> genres;
     private FirebaseFirestore firebaseFirestore;
+    private Context context;
 
-    public ShowsDatabase() {
+    public ShowsDatabase(Context context) {
         this.genres = new ArrayList<>();
         this.databaseReference = FirebaseDatabase.getInstance().getReference();
         this.firebaseFirestore = FirebaseFirestore.getInstance();
+        this.context = context;
     }
 
     //for form
@@ -73,5 +86,50 @@ public class ShowsDatabase {
         });
 
         return this.genres;
+    }
+
+    public void getDetails(String show, String industry, String genre, String image){
+        Log.d("Shows Database", "In getDetails()");
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        firebaseFirestore.collection("tv_shows")
+                .document(genre)
+                .collection(industry)
+                .document(show)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            Thread getData = new Thread(){
+                                @Override
+                                public void run(){
+                                    DocumentSnapshot documentSnapshot = task.getResult();
+                                    Log.d("Shows Database: ", "" + documentSnapshot.getData());
+                                    Show.getInstance().setDescription(documentSnapshot.get("description").toString());
+                                    Show.getInstance().setName(documentSnapshot.get("name").toString());
+                                    Show.getInstance().setRating(Double.parseDouble(documentSnapshot.get("rating").toString()));
+                                    Show.getInstance().setEpisodes(Integer.parseInt(documentSnapshot.get("episodes").toString()));
+                                    Show.getInstance().setLikes(Integer.parseInt(documentSnapshot.get("likes").toString()));
+                                    Show.getInstance().setGenre(documentSnapshot.get("genre").toString());
+                                }
+                            };
+
+                            getData.start();
+
+                            DescriptionFragment descriptionFragment = new DescriptionFragment(image);
+
+                            FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.nav_host_fragment, descriptionFragment);
+                            transaction.addToBackStack("description");
+                            transaction.commit();
+
+                            progressDialog.dismiss();
+                        }
+                    }
+                });
     }
 }

@@ -50,7 +50,7 @@ public class Storage {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
                             superheroImages.add(cardTemp);
                         }
                     });
@@ -77,7 +77,7 @@ public class Storage {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
                             comedyImages.add(cardTemp);
                         }
                     });
@@ -126,7 +126,7 @@ public class Storage {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
                             scienceFictionImages.add(cardTemp);
                         }
                     });
@@ -156,7 +156,7 @@ public class Storage {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
                             allGenres.add(cardTemp);
                         }
                     });
@@ -176,7 +176,7 @@ public class Storage {
                     item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            CardImageChild cardTemp = new CardImageChild(uri.toString());
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
                             allGenres.add(cardTemp);
                         }
                     });

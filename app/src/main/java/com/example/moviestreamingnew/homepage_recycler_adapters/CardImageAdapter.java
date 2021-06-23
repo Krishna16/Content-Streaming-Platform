@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.homepage_recycler_adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +20,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.repository.ShowsDatabase;
 import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.CardViewHolder> {
 
@@ -74,17 +79,19 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
         holder.cardImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(context, "Clicked on: " + holder.cardImage.getTag(), Toast.LENGTH_LONG).show();
-                //Log.d("CardImageAdapter", "Clicked on: " + holder.cardImage.getTag());
+                String [] elements = childItem.getPath().split("/");
 
-                DescriptionFragment descriptionFragment = new DescriptionFragment();
+                String show = elements[elements.length - 1];
+                String industry = elements[elements.length - 2];
+                String genre = elements[elements.length - 3];
 
-                FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, descriptionFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                if (show.indexOf(".") > 0)
+                    show = show.substring(0, show.lastIndexOf("."));
 
-                Log.d("CardImageAdapter", holder.cardImage.getTag().toString());
+                ShowsDatabase showsDatabase = new ShowsDatabase(context);
+
+                //description fragment will open from this method
+                showsDatabase.getDetails(show, industry, genre, childItem.getImage());
             }
         });
     }
