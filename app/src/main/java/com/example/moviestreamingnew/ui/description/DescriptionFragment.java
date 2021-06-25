@@ -45,12 +45,17 @@ public class DescriptionFragment extends Fragment {
     private String imageUrl;
     private TextView title, rating, likes;
 
+    private String show, industry, genre;
+
     public DescriptionFragment() {
         // Required empty public constructor
     }
 
-    public DescriptionFragment(String imageUrl){
+    public DescriptionFragment(String imageUrl, String show, String industry, String genre){
         this.imageUrl = imageUrl;
+        this.show = show;
+        this.industry = industry;
+        this.genre = genre;
     }
 
     @Override
@@ -103,7 +108,7 @@ public class DescriptionFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0){
-                    EpisodeFragment episodeFragment = new EpisodeFragment();
+                    EpisodeFragment episodeFragment = new EpisodeFragment(show, industry, genre);
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.tab_fragment_container, episodeFragment);
@@ -128,7 +133,7 @@ public class DescriptionFragment extends Fragment {
         });
 
         if (episodeTab.getSelectedTabPosition() == 0){
-            EpisodeFragment episodeFragment = new EpisodeFragment();
+            EpisodeFragment episodeFragment = new EpisodeFragment(show, industry, genre);
 
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
             transaction.replace(R.id.tab_fragment_container, episodeFragment);

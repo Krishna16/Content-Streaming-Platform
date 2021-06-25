@@ -34,14 +34,12 @@ import java.util.ConcurrentModificationException;
 import java.util.Objects;
 
 public class ShowsDatabase {
-    private DatabaseReference databaseReference;
     private ArrayList<String> genres;
     private FirebaseFirestore firebaseFirestore;
     private Context context;
 
     public ShowsDatabase(Context context) {
         this.genres = new ArrayList<>();
-        this.databaseReference = FirebaseDatabase.getInstance().getReference();
         this.firebaseFirestore = FirebaseFirestore.getInstance();
         this.context = context;
     }
@@ -89,7 +87,6 @@ public class ShowsDatabase {
     }
 
     public void getDetails(String show, String industry, String genre, String image){
-        Log.d("Shows Database", "In getDetails()");
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Loading...");
@@ -120,7 +117,7 @@ public class ShowsDatabase {
 
                             getData.start();
 
-                            DescriptionFragment descriptionFragment = new DescriptionFragment(image);
+                            DescriptionFragment descriptionFragment = new DescriptionFragment(image, show, industry, genre);
 
                             FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.nav_host_fragment, descriptionFragment);

@@ -78,4 +78,9 @@ dependencies {
 
     //firebase database
     implementation 'com.google.firebase:firebase-database'
+
+    //live-data
+    // ViewModel and lifecycle support for java
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.3.1"
 }

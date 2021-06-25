@@ -2,10 +2,12 @@ package com.example.moviestreamingnew.repository;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.moviestreamingnew.CardImageChild;
+import com.example.moviestreamingnew.models.Video;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -23,6 +25,8 @@ public class Storage {
     private Context context;
     private ArrayList<String> genres;
 
+    private static Storage storage;
+
     public Storage(){
         this.firebaseStorage = FirebaseStorage.getInstance();
         this.superheroImages = new ArrayList<>();
@@ -37,6 +41,14 @@ public class Storage {
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
         this.context = context;
+    }
+
+    public static synchronized Storage getInstance(){
+        if (storage == null){
+            storage = new Storage();
+        }
+
+        return storage;
     }
 
     public ArrayList<CardImageChild> downloadHollywoodSuperheroMovieImages(){
@@ -190,5 +202,37 @@ public class Storage {
         });
 
         return allGenres;
+    }
+
+    public ArrayList<Video> getEpisodes(String show, String industry, String genre){
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference videoReference = storageReference.child("videos/" + genre + "/" + industry + "/" + show);
+        //StorageReference videoReference = storageReference.child("images/" + genre + "/" + industry);
+
+        ArrayList<Video> allVideos = new ArrayList<>();
+
+        videoReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Video video = new Video(item.getName(), uri.toString());
+                            allVideos.add(video);
+                            Log.d("Episode Fragment: ", video.getName());
+                            Log.d("Episode Fragment: ", video.getVideoUrl());
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Storage", "Failed to get videos: " + e.getMessage());
+            }
+        });
+
+        return allVideos;
     }
 }
