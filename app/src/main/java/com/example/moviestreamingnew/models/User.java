@@ -12,6 +12,7 @@ public class User {
     private String uid;
 
     private ArrayList<String> likedMovies;
+    private ArrayList<String> watchLater;
 
     //singleton instance
     private static User user = null;
@@ -97,5 +98,17 @@ public class User {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public ArrayList<String> getWatchLater() {
+        return watchLater;
+    }
+
+    public void setWatchLater(ArrayList<String> watchLater) {
+        this.watchLater = watchLater;
+    }
+
+    public void addToWatchLater(String show){
+        this.watchLater.add(show);
     }
 }

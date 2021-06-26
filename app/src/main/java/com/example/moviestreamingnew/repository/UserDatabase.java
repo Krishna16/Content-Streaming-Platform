@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.moviestreamingnew.NavigationActivity;
 import com.example.moviestreamingnew.SplashActivity;
@@ -26,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,4 +155,21 @@ public class UserDatabase {
             }
         });
     }*/
+
+    public void addLikedShow(String show){
+
+    }
+
+    public void addWatchLater(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLater").push().setValue(show);
+    }
+
+    public void removeWatchLater(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLater").removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable @org.jetbrains.annotations.Nullable DatabaseError error, @NonNull @NotNull DatabaseReference ref) {
+
+            }
+        });
+    }
 }

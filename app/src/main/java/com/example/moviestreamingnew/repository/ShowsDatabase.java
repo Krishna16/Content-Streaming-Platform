@@ -129,4 +129,12 @@ public class ShowsDatabase {
                     }
                 });
     }
+
+    public void addLikes(){
+
+    }
+
+    public void removeLikes(){
+
+    }
 }

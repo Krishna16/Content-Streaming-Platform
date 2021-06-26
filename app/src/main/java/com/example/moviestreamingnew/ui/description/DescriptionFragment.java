@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.models.Show;
+import com.example.moviestreamingnew.repository.ShowsDatabase;
+import com.example.moviestreamingnew.repository.UserDatabase;
 import com.example.moviestreamingnew.ui.episodes.EpisodeFragment;
 import com.example.moviestreamingnew.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,6 +53,11 @@ public class DescriptionFragment extends Fragment {
     private TextView title, rating, likes;
 
     private String show, industry, genre;
+
+    private Button likeButton, watchLater;
+
+    private UserDatabase userDatabase;
+    private ShowsDatabase showsDatabase;
 
     public DescriptionFragment() {
         // Required empty public constructor
@@ -81,6 +90,12 @@ public class DescriptionFragment extends Fragment {
         this.title = root.findViewById(R.id.show_title);
         this.rating = root.findViewById(R.id.show_rating);
         this.likes = root.findViewById(R.id.number_of_likes);
+
+        this.watchLater = root.findViewById(R.id.watch_later);
+        this.likeButton = root.findViewById(R.id.like_button);
+
+        this.userDatabase = new UserDatabase(root.getContext());
+        this.showsDatabase = new ShowsDatabase(root.getContext());
 
         Glide.with(root.getContext())
                 .load(imageUrl)
@@ -144,6 +159,23 @@ public class DescriptionFragment extends Fragment {
 
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
+
+        watchLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (watchLater.getBackground() == ContextCompat.getDrawable(root.getContext(), R.drawable.watch_later_unselected)) {
+                    userDatabase.addWatchLater(Show.getInstance().getName());
+                    watchLater.setBackgroundResource(R.drawable.watch_later_selected);
+                    Toast.makeText(root.getContext(), "Added to watch later successfully!!", Toast.LENGTH_SHORT).show();
+                }
+
+                else{
+                    userDatabase.removeWatchLater(Show.getInstance().getName());
+                    watchLater.setBackgroundResource(R.drawable.watch_later_unselected);
+                    Toast.makeText(root.getContext(), "Removed from watch later successfully!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         return root;
     }
