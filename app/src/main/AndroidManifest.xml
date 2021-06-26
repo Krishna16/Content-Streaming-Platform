@@ -20,7 +20,8 @@
         <activity android:name=".account.Login" />
         <activity
             android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation" />
+            android:label="@string/title_activity_navigation"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"/>
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

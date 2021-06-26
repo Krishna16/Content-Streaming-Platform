@@ -10,10 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.models.Video;
+import com.example.moviestreamingnew.ui.new_user_form.NameFragment;
+import com.example.moviestreamingnew.ui.videoview.VideoFragment;
 
 import org.w3c.dom.Text;
 
@@ -51,7 +55,13 @@ public class ShowEpisodesAdapter extends RecyclerView.Adapter<ShowEpisodesAdapte
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "" + episodeTitles.get(position).getVideoUrl(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "" + episodeTitles.get(position).getVideoUrl(), Toast.LENGTH_LONG).show();
+                VideoFragment nameFragment = new VideoFragment(episodeTitles.get(position).getVideoUrl());
+
+                FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, nameFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
     }

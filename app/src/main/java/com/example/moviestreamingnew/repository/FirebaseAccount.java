@@ -84,6 +84,8 @@ public class FirebaseAccount {
 
                             UserDatabase userDatabase = new UserDatabase(context);
                             userDatabase.doesUserExist();
+                            progressDialog.dismiss();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("SignInWithEmail", "signInWithEmail:failure", task.getException());

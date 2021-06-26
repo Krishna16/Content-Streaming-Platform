@@ -1,5 +1,7 @@
 package com.example.moviestreamingnew.ui.description;
 
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.models.Show;
 import com.example.moviestreamingnew.ui.episodes.EpisodeFragment;
 import com.example.moviestreamingnew.ui.home.HomeFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -112,7 +115,6 @@ public class DescriptionFragment extends Fragment {
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.tab_fragment_container, episodeFragment);
-                    transaction.addToBackStack(null);
                     transaction.commit();
                 }
 
@@ -140,23 +142,15 @@ public class DescriptionFragment extends Fragment {
             transaction.commit();
         }
 
-        root.setFocusableInTouchMode(true);
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK){
-                    HomeFragment homeFragment = new HomeFragment();
-
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.nav_host_fragment, homeFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-
-                return true;
-            }
-        });
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+        bottomNavigationView.setVisibility(View.VISIBLE);
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 }

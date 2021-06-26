@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.ui.home;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -58,14 +59,7 @@ public class HomeFragment extends Fragment{
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        /*homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);*/
-
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
-        /*homeViewModel.setImages1(selectedGenres.get(0));
-        homeViewModel.setImages2(selectedGenres.get(1));
-        homeViewModel.setImages3(selectedGenres.get(2));*/
 
         SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -80,10 +74,21 @@ public class HomeFragment extends Fragment{
                 .observe(getViewLifecycleOwner(), new Observer<ArrayList<ShowWithGenreParent>>() {
                     @Override
                     public void onChanged(ArrayList<ShowWithGenreParent> showWithGenreParents) {
+                        //homeViewModel.getShowWithGenreParent().postValue(showWithGenreParents);
                         showWithGenreAdapter.notifyDataSetChanged();
                         Log.d("HomeFragment", "Livedata onChanged called!!");
                     }
                 });
+
+        /*final Observer<ArrayList<ShowWithGenreParent>> showWithGenreParentObserver = new Observer<ArrayList<ShowWithGenreParent>>() {
+            @Override
+            public void onChanged(ArrayList<ShowWithGenreParent> showWithGenreParents) {
+                homeViewModel.getShowWithGenreParent().postValue(showWithGenreParents);
+                showWithGenreAdapter.notifyDataSetChanged();
+            }
+        };
+
+        homeViewModel.getShowWithGenreParent().observe(getViewLifecycleOwner(), showWithGenreParentObserver);*/
 
         //showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(0), images1));
         //showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(1), images2));
@@ -96,12 +101,7 @@ public class HomeFragment extends Fragment{
         showsWithGenre.setLayoutManager(linearLayoutManager);
         showsWithGenre.setAdapter(showWithGenreAdapter);
 
-        /*if (selectedGenres.get(0) == null){
-            userDatabase.getSelectedGenres();
-            selectedGenres = showsSharedPreferences.getStoredGenres();
-        }
-
-        pool = Executors.newFixedThreadPool(3);
+        /*pool = Executors.newFixedThreadPool(3);
         pool.execute(new Runnable() {
             @Override
             public void run() {
@@ -159,6 +159,8 @@ public class HomeFragment extends Fragment{
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 
         return root;
     }

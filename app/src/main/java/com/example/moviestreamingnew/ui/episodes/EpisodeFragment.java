@@ -162,6 +162,10 @@ public class EpisodeFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        this.storage = new Storage();
+        this.videos = new ArrayList<>();
+
         videos = storage.getEpisodes(show, industry, genre);
     }
 }
