@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,6 +42,8 @@ public class UserDatabase {
     private User user = new User();
     private ShowsSharedPreferences showsSharedPreferences;
     private List<String> genres;
+    private boolean hasLiked = false;
+    private boolean hasWatchLater = false;
 
     public UserDatabase(){
 
@@ -126,6 +130,8 @@ public class UserDatabase {
                 Log.d("DataSnapshot exists: ", "" + dataSnapshot.exists());
 
                 if (dataSnapshot.exists()){
+                    downloadUserDataToSharedPreferences();
+
                     Intent intent = new Intent(context, NavigationActivity.class);
                     context.startActivity(intent);
                     ((Activity) context).finish();
@@ -157,17 +163,162 @@ public class UserDatabase {
     }*/
 
     public void addLikedShow(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("likedShows").push().setValue(show);
+    }
 
+    public void removeLikedShow(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("likedShows").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(show)){
+                        item.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void addWatchLater(String show){
-        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLater").push().setValue(show);
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterShows").push().setValue(show);
     }
 
     public void removeWatchLater(String show){
-        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLater").removeValue(new DatabaseReference.CompletionListener() {
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterShows").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@Nullable @org.jetbrains.annotations.Nullable DatabaseError error, @NonNull @NotNull DatabaseReference ref) {
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(show)){
+                        item.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public boolean isLikedShow(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("likedShows").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(show)){
+                        hasLiked = true;
+                        Log.d("UserDatabase: ", "hasLiked: " + hasLiked);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        return hasLiked;
+    }
+
+    public boolean isWatchLater(String show){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterShows").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(show)){
+                        hasWatchLater = true;
+                        Log.d("UserDatabase: ", "hasWatchLater: " + hasWatchLater);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        return hasWatchLater;
+    }
+
+    public void downloadUserDataToSharedPreferences(){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Log.d("UserDatabase: ", "Downloading user data...");
+
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+
+                User user = new User();
+
+                int i = 0;
+
+                for (DataSnapshot item: children){
+                    switch (i){
+                        case 0: Iterable<DataSnapshot> genres = item.getChildren();
+                                for (DataSnapshot genre: genres){
+                                    user.addGenre(genre.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        case 1: user.setIndustry(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 2: Iterable<DataSnapshot> liked = item.getChildren();
+                                for (DataSnapshot like: liked){
+                                    user.addToLiked(like.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        case 3: user.setName(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 4: user.setPreference(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 5: user.setUid(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 6: Iterable<DataSnapshot> watchLater = item.getChildren();
+                                for (DataSnapshot later: watchLater){
+                                    user.addToWatchLater(later.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        default: break;
+                    }
+                }
+
+                ShowsSharedPreferences showsSharedPreferences = new ShowsSharedPreferences(context);
+                showsSharedPreferences.storeUserData(user);
+
+                Log.d("User Database: ", "Stored User Data: " + user.getUid());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
 
             }
         });

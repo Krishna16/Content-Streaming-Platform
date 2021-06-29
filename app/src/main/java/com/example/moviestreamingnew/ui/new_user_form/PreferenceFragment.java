@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.UserDatabase;
 
@@ -33,6 +34,7 @@ public class PreferenceFragment extends Fragment {
     private CardView theatreCard, ottCard;
     private RadioButton theatreRadio, ottRadio;
 
+    private ShowsSharedPreferences showsSharedPreferences;
 
     public PreferenceFragment() {
         // Required empty public constructor
@@ -59,6 +61,8 @@ public class PreferenceFragment extends Fragment {
 
         this.theatreCard = root.findViewById(R.id.theatre_cardView);
         this.ottCard = root.findViewById(R.id.ott_cardView);
+
+        this.showsSharedPreferences = new ShowsSharedPreferences(root.getContext());
 
         theatreCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +98,8 @@ public class PreferenceFragment extends Fragment {
                     User.getInstance().setPreference(selected);
                     UserDatabase userDB = new UserDatabase(root.getContext());
                     userDB.uploadUserData();
+
+                    showsSharedPreferences.storeUserData(User.getInstance());
                 }
             }
         });

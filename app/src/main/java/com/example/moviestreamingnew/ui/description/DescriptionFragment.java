@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.Show;
 import com.example.moviestreamingnew.repository.ShowsDatabase;
 import com.example.moviestreamingnew.repository.UserDatabase;
@@ -30,6 +32,7 @@ import com.example.moviestreamingnew.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class DescriptionFragment extends Fragment {
 
@@ -59,15 +62,24 @@ public class DescriptionFragment extends Fragment {
     private UserDatabase userDatabase;
     private ShowsDatabase showsDatabase;
 
+    private boolean hasLiked;
+    private boolean hasWatchLater;
+
+    private ShowsSharedPreferences showsSharedPreferences;
+    private FirebaseAuth mAuth;
+
     public DescriptionFragment() {
         // Required empty public constructor
     }
 
-    public DescriptionFragment(String imageUrl, String show, String industry, String genre){
+    public DescriptionFragment(String imageUrl, String show, String industry, String genre, boolean hasLiked, boolean hasWatchLater){
         this.imageUrl = imageUrl;
         this.show = show;
         this.industry = industry;
         this.genre = genre;
+        this.hasLiked = hasLiked;
+        this.hasWatchLater = hasWatchLater;
+        this.mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -96,6 +108,18 @@ public class DescriptionFragment extends Fragment {
 
         this.userDatabase = new UserDatabase(root.getContext());
         this.showsDatabase = new ShowsDatabase(root.getContext());
+
+        this.showsSharedPreferences = new ShowsSharedPreferences(root.getContext());
+
+        if (showsSharedPreferences.hasUserWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
+            Log.d("Description Fragment: ", "hasWatchLater: " + hasWatchLater);
+            watchLater.setBackgroundResource(R.drawable.watch_later_selected);
+        }
+
+        if (showsSharedPreferences.hasUserLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
+            Log.d("Description Fragment: ", "hasLiked: " + hasLiked);
+            likeButton.setBackgroundResource(R.drawable.like);
+        }
 
         Glide.with(root.getContext())
                 .load(imageUrl)
@@ -163,16 +187,45 @@ public class DescriptionFragment extends Fragment {
         watchLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (watchLater.getBackground() == ContextCompat.getDrawable(root.getContext(), R.drawable.watch_later_unselected)) {
+                if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(root.getContext(), R.drawable.watch_later_unselected).getConstantState())) {
                     userDatabase.addWatchLater(Show.getInstance().getName());
                     watchLater.setBackgroundResource(R.drawable.watch_later_selected);
                     Toast.makeText(root.getContext(), "Added to watch later successfully!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.addToWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
                 }
 
-                else{
+                else if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(root.getContext(), R.drawable.watch_later_selected).getConstantState())){
                     userDatabase.removeWatchLater(Show.getInstance().getName());
                     watchLater.setBackgroundResource(R.drawable.watch_later_unselected);
                     Toast.makeText(root.getContext(), "Removed from watch later successfully!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.removeFromWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                }
+            }
+        });
+
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (likeButton.getBackground().getConstantState().equals(ContextCompat.getDrawable(root.getContext(), R.drawable.unlike).getConstantState())){
+                    userDatabase.addLikedShow(Show.getInstance().getName());
+                    likeButton.setBackgroundResource(R.drawable.like);
+                    int numberOfLikes = Integer.parseInt(likes.getText().toString());
+                    numberOfLikes++;
+                    showsDatabase.addLikes(show, industry, genre, numberOfLikes);
+                    Toast.makeText(root.getContext(), "Like!!", Toast.LENGTH_SHORT).show();
+                    likes.setText("" + numberOfLikes);
+                    showsSharedPreferences.addToLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                }
+
+                else if (likeButton.getBackground().getConstantState().equals(ContextCompat.getDrawable(root.getContext(), R.drawable.like).getConstantState())){
+                    userDatabase.removeLikedShow(Show.getInstance().getName());
+                    likeButton.setBackgroundResource(R.drawable.unlike);
+                    int numberOfLikes = Integer.parseInt(likes.getText().toString());
+                    numberOfLikes--;
+                    showsDatabase.removeLikes(show, industry, genre, numberOfLikes);
+                    Toast.makeText(root.getContext(), "Unlike!!", Toast.LENGTH_SHORT).show();
+                    likes.setText("" + numberOfLikes);
+                    showsSharedPreferences.removeFromLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
                 }
             }
         });

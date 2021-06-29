@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.caching.ImageLoader;
 import com.example.moviestreamingnew.repository.ShowsDatabase;
 import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 
@@ -32,10 +33,12 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
 
     private List<CardImageChild> itemList;
     private Context context;
+    private ImageLoader imageLoader;
 
     public CardImageAdapter(List<CardImageChild> list, Context context){
         this.itemList = list;
         this.context = context;
+        this.imageLoader = new ImageLoader(context);
     }
 
     @NonNull
@@ -70,9 +73,11 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
 
         Glide.with(context)
                 .load(childItem.getImage())
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.cardImage);
+
+        //imageLoader.DisplayImage(childItem.getImage(), holder.cardImage);
 
         holder.cardImage.setTag(childItem.getImage());
 

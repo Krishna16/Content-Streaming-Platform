@@ -24,6 +24,8 @@ public class Storage {
     private ArrayList<CardImageChild> scienceFictionImages;
     private Context context;
     private ArrayList<String> genres;
+    //private ArrayList<CarouselItem> carouselItems;
+    private ArrayList<CardImageChild> allGenres;
 
     private static Storage storage;
 
@@ -33,6 +35,8 @@ public class Storage {
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
         this.genres = new ArrayList<>();
+        //this.carouselItems = new ArrayList<>();
+        this.allGenres = new ArrayList<>();
     }
 
     public Storage(Context context){
@@ -154,6 +158,8 @@ public class Storage {
         return scienceFictionImages;
     }
 
+
+    //method to get all images for individual genres
     public ArrayList<CardImageChild> downloadMovieImages(String genre){
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference hollywood = storageReference.child("images/" + genre + "/Hollywood");
@@ -234,5 +240,55 @@ public class Storage {
         });
 
         return allVideos;
+    }
+
+
+    //method to get all images for the carousel view
+    public ArrayList<CardImageChild> downloadShowImages(String genre){
+        StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference hollywood = storageReference.child("images/" + genre + "/Hollywood");
+        StorageReference bollywood = storageReference.child("images/" + genre + "/Bollywood");
+
+        hollywood.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
+                            allGenres.add(cardTemp);
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        bollywood.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item: listResult.getItems()){
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            CardImageChild cardTemp = new CardImageChild(uri.toString(), uri.getPath());
+                            allGenres.add(cardTemp);
+                        }
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        return allGenres;
     }
 }

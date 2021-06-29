@@ -1,34 +1,53 @@
 package com.example.moviestreamingnew.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     private String name;
+
     private List<String> genres;
+
     private String preference;
+
     private String gender;
+
     private String industry;
+
     private String uid;
 
-    private ArrayList<String> likedMovies;
-    private ArrayList<String> watchLater;
+    private ArrayList<String> likedShows;
+    private ArrayList<String> watchLaterShows;
 
     //singleton instance
     private static User user = null;
 
     public User() {
+        this.name = "";
+        this.genres = new ArrayList<>();
+        this.preference = "";
+        this.gender = "";
+        this.industry = "";
+
+        this.likedShows = new ArrayList<>();
+        this.genres = new ArrayList<>();
+        this.watchLaterShows = new ArrayList<>();
     }
 
-    public User(String name, List<String> genres, String preference, String gender, String industry, ArrayList<String> likedMovies) {
+    public User(String name, List<String> genres, String preference, String gender, String industry, ArrayList<String> likedShows) {
         this.name = name;
         this.genres = genres;
         this.preference = preference;
         this.gender = gender;
         this.industry = industry;
 
-        this.likedMovies = likedMovies;
+        this.likedShows = likedShows;
         this.genres = new ArrayList<>();
+        this.watchLaterShows = new ArrayList<>();
     }
 
     public static synchronized User getInstance(){
@@ -84,12 +103,12 @@ public class User {
         this.industry = industry;
     }
 
-    public ArrayList<String> getLikedMovies() {
-        return likedMovies;
+    public ArrayList<String> getLikedShows() {
+        return likedShows;
     }
 
-    public void setLikedMovies(ArrayList<String> likedMovies) {
-        this.likedMovies = likedMovies;
+    public void setLikedMovies(ArrayList<String> likedShows) {
+        this.likedShows = likedShows;
     }
 
     public String getUid() {
@@ -101,14 +120,18 @@ public class User {
     }
 
     public ArrayList<String> getWatchLater() {
-        return watchLater;
+        return watchLaterShows;
     }
 
-    public void setWatchLater(ArrayList<String> watchLater) {
-        this.watchLater = watchLater;
+    public void setWatchLater(ArrayList<String> watchLaterShows) {
+        this.watchLaterShows = watchLaterShows;
     }
 
     public void addToWatchLater(String show){
-        this.watchLater.add(show);
+        this.watchLaterShows.add(show);
+    }
+
+    public void addToLiked(String show) {
+        this.likedShows.add(show);
     }
 }

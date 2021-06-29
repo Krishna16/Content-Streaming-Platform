@@ -32,11 +32,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ShowsDatabase {
     private ArrayList<String> genres;
     private FirebaseFirestore firebaseFirestore;
     private Context context;
+    private boolean hasLiked = false;
+    private boolean hasWatchLater = false;
 
     public ShowsDatabase(Context context) {
         this.genres = new ArrayList<>();
@@ -100,11 +105,12 @@ public class ShowsDatabase {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+
                         if (task.isSuccessful()){
                             Thread getData = new Thread(){
                                 @Override
                                 public void run(){
-                                    DocumentSnapshot documentSnapshot = task.getResult();
                                     Log.d("Shows Database: ", "" + documentSnapshot.getData());
                                     Show.getInstance().setDescription(documentSnapshot.get("description").toString());
                                     Show.getInstance().setName(documentSnapshot.get("name").toString());
@@ -117,7 +123,33 @@ public class ShowsDatabase {
 
                             getData.start();
 
-                            DescriptionFragment descriptionFragment = new DescriptionFragment(image, show, industry, genre);
+                            Thread getLiked = new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    UserDatabase userDatabase = new UserDatabase(context);
+                                    hasLiked = userDatabase.isLikedShow(documentSnapshot.get("name").toString());
+                                }
+                            };
+
+                            Log.d("ShowsDatabase: ", "hasLiked: " + hasLiked);
+
+                            getLiked.start();
+
+                            Thread getWatchLater = new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    UserDatabase userDatabase = new UserDatabase(context);
+                                    hasWatchLater = userDatabase.isWatchLater(documentSnapshot.get("name").toString());
+                                }
+                            };
+
+                            getWatchLater.start();
+
+                            Log.d("ShowsDatabase: ", "hasWatchLater: " + hasWatchLater);
+
+                            DescriptionFragment descriptionFragment = new DescriptionFragment(image, show, industry, genre, hasLiked, hasWatchLater);
 
                             FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.nav_host_fragment, descriptionFragment);
@@ -130,11 +162,19 @@ public class ShowsDatabase {
                 });
     }
 
-    public void addLikes(){
-
+    public void addLikes(String show, String industry, String genre, int likes){
+        firebaseFirestore.collection("tv_shows")
+                .document(genre)
+                .collection(industry)
+                .document(show)
+                .update("likes", likes);
     }
 
-    public void removeLikes(){
-
+    public void removeLikes(String show, String industry, String genre, int likes){
+        firebaseFirestore.collection("tv_shows")
+                .document(genre)
+                .collection(industry)
+                .document(show)
+                .update("likes", likes);
     }
 }

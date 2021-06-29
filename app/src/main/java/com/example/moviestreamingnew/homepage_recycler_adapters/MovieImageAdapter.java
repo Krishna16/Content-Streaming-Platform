@@ -15,17 +15,26 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.caching.ImageLoader;
+import com.example.moviestreamingnew.repository.ShowsDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieImageAdapter extends RecyclerView.Adapter<MovieImageAdapter.ViewHolder> {
 
-    private ArrayList<CardImageChild> movieImages;
+    private List<CardImageChild> movieImages;
     private Context mContext;
+    private ImageLoader imageLoader;
 
     public MovieImageAdapter(ArrayList<CardImageChild> movieImages, Context mContext) {
         this.movieImages = movieImages;
         this.mContext = mContext;
+        imageLoader = new ImageLoader(mContext);
+    }
+
+    public void setMovieImages(ArrayList<CardImageChild> movieImages){
+        this.movieImages = movieImages;
     }
 
     @NonNull
@@ -54,20 +63,41 @@ public class MovieImageAdapter extends RecyclerView.Adapter<MovieImageAdapter.Vi
 
         Glide.with(mContext)
                 .load(movieImages.get(position).getImage())
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.movieImage);
+
+        //imageLoader.DisplayImage(movieImages.get(position).getImage(), holder.movieImage);
+
+        holder.movieImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String [] elements = movieImages.get(position).getPath().split("/");
+
+                String show = elements[elements.length - 1];
+                String industry = elements[elements.length - 2];
+                String genre = elements[elements.length - 3];
+
+                if (show.indexOf(".") > 0)
+                    show = show.substring(0, show.lastIndexOf("."));
+
+                ShowsDatabase showsDatabase = new ShowsDatabase(mContext);
+
+                //description fragment will open from this method
+                showsDatabase.getDetails(show, industry, genre, movieImages.get(position).getImage());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        Log.d("MovieImage size: ", "" + movieImages.size());
+        Log.d("MovieImageAdapter: ", "MovieImage size: " + movieImages.size());
         return movieImages.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView movieImage;
+        private final ImageView movieImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

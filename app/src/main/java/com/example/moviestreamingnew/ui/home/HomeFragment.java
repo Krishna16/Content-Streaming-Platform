@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.moviestreamingnew.CardImageChild;
@@ -33,33 +35,29 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
 
 public class HomeFragment extends Fragment{
 
     private HomeViewModel homeViewModel;
 
     private MovieImageAdapter movieImageAdapter;
-    private ArrayList<CardImageChild> movieImages = new ArrayList<>();
     private ViewPager2 movieImagePager;
     private TabLayout tabLayout;
     private RecyclerView showsWithGenre;
     private LinearLayoutManager linearLayoutManager;
     private ShowWithGenreAdapter showWithGenreAdapter;
-    private ArrayList<CardImageChild> images1;
-    private ArrayList<CardImageChild> images2;
-    private ArrayList<CardImageChild> images3;
     private ArrayList<ShowWithGenreParent> showWithGenreParents;
-    private Storage storage;
-    private ExecutorService pool;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UserDatabase userDatabase;
     private ArrayList<String> selectedGenres;
     private ShowsSharedPreferences showsSharedPreferences;
+    private View root;
+    private ArrayList<CardImageChild> showImages;
+    private Storage storage;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        root = inflater.inflate(R.layout.fragment_home, container, false);
 
         SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -101,42 +99,21 @@ public class HomeFragment extends Fragment{
         showsWithGenre.setLayoutManager(linearLayoutManager);
         showsWithGenre.setAdapter(showWithGenreAdapter);
 
-        /*pool = Executors.newFixedThreadPool(3);
-        pool.execute(new Runnable() {
-            @Override
-            public void run() {
-                images1 = storage.downloadMovieImages(selectedGenres.get(0));
-                images2 = storage.downloadMovieImages(selectedGenres.get(1));
-                images3 = storage.downloadMovieImages(selectedGenres.get(2));
-            }
-        });
-
-        try {
-            pool.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
-        /*showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(0), images1));
-        showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(1), images2));
-        showWithGenreParents.add(new ShowWithGenreParent(selectedGenres.get(2), images3));
-
-        linearLayoutManager = new LinearLayoutManager(root.getContext());
-        showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());
-
-        showsWithGenre = root.findViewById(R.id.shows_with_genre_view);
-        showsWithGenre.setLayoutManager(linearLayoutManager);
-        showsWithGenre.setAdapter(showWithGenreAdapter);*/
+        /*linearLayoutManager = new LinearLayoutManager(root.getContext());
+        showWithGenreAdapter = new ShowWithGenreAdapter(showWithGenreParents, root.getContext());*/
 
         Toast.makeText(root.getContext(), "Loading...", Toast.LENGTH_LONG).show();
 
         movieImagePager = root.findViewById(R.id.movie_image_pager);
+        movieImagePager.setClipToPadding(false);
+        movieImagePager.setClipChildren(false);
+        movieImagePager.setOffscreenPageLimit(3);
+        movieImagePager.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        movieImagePager.setPageTransformer(compositePageTransformer);
 
-        movieImages.addAll(images1);
-        movieImages.addAll(images2);
-        movieImages.addAll(images3);
-
-        movieImageAdapter = new MovieImageAdapter(movieImages, root.getContext());
+        movieImageAdapter = new MovieImageAdapter(showImages, root.getContext());
 
         movieImagePager.canScrollHorizontally(1);
         movieImagePager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -157,6 +134,7 @@ public class HomeFragment extends Fragment{
                 showWithGenreAdapter.notifyDataSetChanged();
                 movieImageAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
+                Log.d("HomeFragment: ", "ShowImages size: " + showImages.size());
             }
         });
 
@@ -174,12 +152,10 @@ public class HomeFragment extends Fragment{
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
         showWithGenreParents = new ArrayList<>();
-        images1 = new ArrayList<>();
-        images2 = new ArrayList<>();
-        images3 = new ArrayList<>();
         selectedGenres = new ArrayList<>();
+        showImages = new ArrayList<>();
 
-        storage = new Storage(context);
+        storage = new Storage();
 
         userDatabase = new UserDatabase(context);
 
@@ -192,13 +168,22 @@ public class HomeFragment extends Fragment{
             selectedGenres = showsSharedPreferences.getStoredGenres();
         }
 
-        //images1 = storage.downloadMovieImages(selectedGenres.get(0));
-        //images2 = storage.downloadMovieImages(selectedGenres.get(1));
-        //images3 = storage.downloadMovieImages(selectedGenres.get(2));
-
         homeViewModel.setImages1(selectedGenres.get(0));
         homeViewModel.setImages2(selectedGenres.get(1));
         homeViewModel.setImages3(selectedGenres.get(2));
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+
+                showImages = storage.downloadShowImages(selectedGenres.get(0));
+                showImages = storage.downloadShowImages(selectedGenres.get(1));
+                showImages = storage.downloadShowImages(selectedGenres.get(2));
+            }
+        };
+
+        thread.start();
     }
 
 
@@ -217,6 +202,8 @@ public class HomeFragment extends Fragment{
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.d("HomeFragment: ", "ShowImages size: " + showImages.size());
+
                 new CountDownTimer(2000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
@@ -234,6 +221,6 @@ public class HomeFragment extends Fragment{
                     }
                 }.start();
             }
-        }, 2500);
+        }, 3000);
     }
 }

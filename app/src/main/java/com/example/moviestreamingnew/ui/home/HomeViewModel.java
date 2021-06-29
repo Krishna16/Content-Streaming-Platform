@@ -1,5 +1,7 @@
 package com.example.moviestreamingnew.ui.home;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -7,24 +9,20 @@ import androidx.lifecycle.ViewModel;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.ShowWithGenreParent;
 import com.example.moviestreamingnew.repository.Storage;
+import com.google.api.LogDescriptor;
 
 import java.util.ArrayList;
 
 public class HomeViewModel extends ViewModel {
-
-    private MutableLiveData<String> mText;
 
     private ArrayList<CardImageChild> images1;
     private ArrayList<CardImageChild> images2;
     private ArrayList<CardImageChild> images3;
 
     private MutableLiveData<ArrayList<ShowWithGenreParent>> showWithGenreParent;
-
     private Storage storage;
 
     public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
         storage = Storage.getInstance();
 
         images1 = new ArrayList<>();
@@ -32,10 +30,6 @@ public class HomeViewModel extends ViewModel {
         images3 = new ArrayList<>();
 
         showWithGenreParent = new MutableLiveData<>();
-    }
-
-    public LiveData<String> getText() {
-        return mText;
     }
 
     public void setImages1(String genre) {
