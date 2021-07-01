@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.moviestreamingnew.R;
@@ -122,30 +124,6 @@ public class ShowsDatabase {
                             };
 
                             getData.start();
-
-                            Thread getLiked = new Thread(){
-                                @Override
-                                public void run() {
-                                    super.run();
-                                    UserDatabase userDatabase = new UserDatabase(context);
-                                    hasLiked = userDatabase.isLikedShow(documentSnapshot.get("name").toString());
-                                }
-                            };
-
-                            Log.d("ShowsDatabase: ", "hasLiked: " + hasLiked);
-
-                            getLiked.start();
-
-                            Thread getWatchLater = new Thread(){
-                                @Override
-                                public void run() {
-                                    super.run();
-                                    UserDatabase userDatabase = new UserDatabase(context);
-                                    hasWatchLater = userDatabase.isWatchLater(documentSnapshot.get("name").toString());
-                                }
-                            };
-
-                            getWatchLater.start();
 
                             Log.d("ShowsDatabase: ", "hasWatchLater: " + hasWatchLater);
 

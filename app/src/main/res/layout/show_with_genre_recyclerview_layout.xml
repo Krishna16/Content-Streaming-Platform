@@ -15,7 +15,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="Horror"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout

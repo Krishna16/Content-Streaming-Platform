@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 public class VideoFragment extends Fragment {
 
@@ -78,6 +79,9 @@ public class VideoFragment extends Fragment {
         episode_view.start();*/
 
         bottomNavigationView.setVisibility(View.GONE);
+
+        TabLayout showMovieLayout = getActivity().findViewById(R.id.show_movie_tab_layout);
+        showMovieLayout.setVisibility(View.GONE);
 
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 

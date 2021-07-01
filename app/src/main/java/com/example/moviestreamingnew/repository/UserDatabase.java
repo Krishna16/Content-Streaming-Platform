@@ -132,9 +132,9 @@ public class UserDatabase {
                 if (dataSnapshot.exists()){
                     downloadUserDataToSharedPreferences();
 
-                    Intent intent = new Intent(context, NavigationActivity.class);
+                    /*Intent intent = new Intent(context, NavigationActivity.class);
                     context.startActivity(intent);
-                    ((Activity) context).finish();
+                    ((Activity) context).finish();*/
                 }
 
                 else{
@@ -314,7 +314,14 @@ public class UserDatabase {
                 ShowsSharedPreferences showsSharedPreferences = new ShowsSharedPreferences(context);
                 showsSharedPreferences.storeUserData(user);
 
+                Intent intent = new Intent(context, NavigationActivity.class);
+                context.startActivity(intent);
+                ((Activity) context).finish();
+
                 Log.d("User Database: ", "Stored User Data: " + user.getUid());
+                Log.d("Login: ", "In UserDatabase");
+
+                Toast.makeText(context, "Please restart the app to see changes!!", Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

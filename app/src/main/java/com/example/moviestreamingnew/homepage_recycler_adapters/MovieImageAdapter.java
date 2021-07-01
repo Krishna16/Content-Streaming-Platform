@@ -15,7 +15,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
-import com.example.moviestreamingnew.caching.ImageLoader;
 import com.example.moviestreamingnew.repository.ShowsDatabase;
 
 import java.util.ArrayList;
@@ -25,12 +24,10 @@ public class MovieImageAdapter extends RecyclerView.Adapter<MovieImageAdapter.Vi
 
     private List<CardImageChild> movieImages;
     private Context mContext;
-    private ImageLoader imageLoader;
 
     public MovieImageAdapter(ArrayList<CardImageChild> movieImages, Context mContext) {
         this.movieImages = movieImages;
         this.mContext = mContext;
-        imageLoader = new ImageLoader(mContext);
     }
 
     public void setMovieImages(ArrayList<CardImageChild> movieImages){

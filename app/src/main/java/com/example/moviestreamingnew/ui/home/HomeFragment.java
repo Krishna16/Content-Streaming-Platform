@@ -2,6 +2,8 @@ package com.example.moviestreamingnew.ui.home;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -12,7 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +41,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment{
 
@@ -54,6 +61,8 @@ public class HomeFragment extends Fragment{
     private View root;
     private ArrayList<CardImageChild> showImages;
     private Storage storage;
+    private Toolbar toolbar;
+    private TabLayout show_movie_layout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,6 +86,35 @@ public class HomeFragment extends Fragment{
                         Log.d("HomeFragment", "Livedata onChanged called!!");
                     }
                 });
+
+        toolbar = getActivity().findViewById(R.id.custom_toolbar);
+        //((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        show_movie_layout = getActivity().findViewById(R.id.show_movie_tab_layout);
+
+        /*show_movie_layout.addTab(show_movie_layout.newTab().setText("Tv Shows"));
+        show_movie_layout.addTab(show_movie_layout.newTab().setText("Movies"));
+        show_movie_layout.setTabTextColors(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+
+        show_movie_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });*/
+
+        makeActionBarVisible();
 
         /*final Observer<ArrayList<ShowWithGenreParent>> showWithGenreParentObserver = new Observer<ArrayList<ShowWithGenreParent>>() {
             @Override
@@ -143,6 +181,14 @@ public class HomeFragment extends Fragment{
         return root;
     }
 
+    private void makeActionBarVisible() {
+        if (toolbar != null)
+            toolbar.setVisibility(View.VISIBLE);
+
+        if (show_movie_layout != null)
+            show_movie_layout.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -203,6 +249,8 @@ public class HomeFragment extends Fragment{
             @Override
             public void run() {
                 Log.d("HomeFragment: ", "ShowImages size: " + showImages.size());
+
+                makeActionBarVisible();
 
                 new CountDownTimer(2000, 1000) {
 

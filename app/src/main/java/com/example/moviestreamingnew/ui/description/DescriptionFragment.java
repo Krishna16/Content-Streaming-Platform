@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -183,6 +185,14 @@ public class DescriptionFragment extends Fragment {
 
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setVisibility(View.VISIBLE);
+
+        //((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+
+        Toolbar toolbar = getActivity().findViewById(R.id.custom_toolbar);
+        toolbar.setVisibility(View.GONE);
+
+        TabLayout tabLayout = getActivity().findViewById(R.id.show_movie_tab_layout);
+        tabLayout.setVisibility(View.GONE);
 
         watchLater.setOnClickListener(new View.OnClickListener() {
             @Override

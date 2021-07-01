@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,9 +65,13 @@ public class SplashActivity extends AppCompatActivity {
                                         userDatabase.downloadUserDataToSharedPreferences();
                                     }
 
-                                    Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
-                                    startActivity(i);
-                                    finish();
+                                    else {
+                                        Log.d("Login: ", "In UserDatabase");
+
+                                        Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
                                 }
                             }
 
