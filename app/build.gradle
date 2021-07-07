@@ -119,7 +119,12 @@ dependencies {
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
     //Google and Youtube API
-    /*implementation 'com.google.api-client:google-api-client:1.23.0'
+    //implementation 'com.google.api-client:google-api-client:1.23.0'
+    //implementation 'com.google.apis:google-api-services-youtube:v3-rev183-1.22.0'
+
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation 'com.google.apis:google-api-services-youtube:v3-rev183-1.22.0'*/
+
+    implementation ('com.google.apis:google-api-services-youtube:v3-rev204-1.23.0'){
+        exclude group:'com.google.guava'
+    }
 }

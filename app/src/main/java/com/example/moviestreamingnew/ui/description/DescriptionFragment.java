@@ -89,11 +89,11 @@ public class DescriptionFragment extends AppCompatActivity {
 
         this.showsSharedPreferences = new ShowsSharedPreferences(this);
 
-        if (showsSharedPreferences.hasUserWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
+        if (showsSharedPreferences.hasUserWatchLaterShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
             watchLater.setBackgroundResource(R.drawable.watch_later_selected);
         }
 
-        if (showsSharedPreferences.hasUserLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
+        if (showsSharedPreferences.hasUserLikedShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName())){
             likeButton.setBackgroundResource(R.drawable.like);
         }
 
@@ -174,17 +174,17 @@ public class DescriptionFragment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(DescriptionFragment.this, R.drawable.watch_later_unselected).getConstantState())) {
-                    userDatabase.addWatchLater(Show.getInstance().getName());
+                    userDatabase.addWatchLaterShow(Show.getInstance().getName());
                     watchLater.setBackgroundResource(R.drawable.watch_later_selected);
                     Toast.makeText(DescriptionFragment.this, "Added to watch later successfully!!", Toast.LENGTH_SHORT).show();
-                    showsSharedPreferences.addToWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                    showsSharedPreferences.addToWatchLaterShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
                 }
 
                 else if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(DescriptionFragment.this, R.drawable.watch_later_selected).getConstantState())){
-                    userDatabase.removeWatchLater(Show.getInstance().getName());
+                    userDatabase.removeWatchLaterShow(Show.getInstance().getName());
                     watchLater.setBackgroundResource(R.drawable.watch_later_unselected);
                     Toast.makeText(DescriptionFragment.this, "Removed from watch later successfully!!", Toast.LENGTH_SHORT).show();
-                    showsSharedPreferences.removeFromWatchLater(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                    showsSharedPreferences.removeFromWatchLaterShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
                 }
             }
         });
@@ -193,25 +193,25 @@ public class DescriptionFragment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (likeButton.getBackground().getConstantState().equals(ContextCompat.getDrawable(DescriptionFragment.this, R.drawable.unlike).getConstantState())){
-                    userDatabase.addLikedShow(Show.getInstance().getName());
-                    likeButton.setBackgroundResource(R.drawable.like);
-                    int numberOfLikes = Integer.parseInt(likes.getText().toString());
-                    numberOfLikes++;
-                    showsDatabase.addLikes(show, industry, genre, numberOfLikes);
-                    Toast.makeText(DescriptionFragment.this, "Like!!", Toast.LENGTH_SHORT).show();
-                    likes.setText("" + numberOfLikes);
-                    showsSharedPreferences.addToLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
-                }
+                        userDatabase.addLikedShow(Show.getInstance().getName());
+                        likeButton.setBackgroundResource(R.drawable.like);
+                        int numberOfLikes = Integer.parseInt(likes.getText().toString());
+                        numberOfLikes++;
+                        showsDatabase.addLikes(show, industry, genre, numberOfLikes);
+                        Toast.makeText(DescriptionFragment.this, "Like!!", Toast.LENGTH_SHORT).show();
+                        likes.setText("" + numberOfLikes);
+                        showsSharedPreferences.addToLikedShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                    }
 
                 else if (likeButton.getBackground().getConstantState().equals(ContextCompat.getDrawable(DescriptionFragment.this, R.drawable.like).getConstantState())){
-                    userDatabase.removeLikedShow(Show.getInstance().getName());
-                    likeButton.setBackgroundResource(R.drawable.unlike);
-                    int numberOfLikes = Integer.parseInt(likes.getText().toString());
-                    numberOfLikes--;
-                    showsDatabase.removeLikes(show, industry, genre, numberOfLikes);
-                    Toast.makeText(DescriptionFragment.this, "Unlike!!", Toast.LENGTH_SHORT).show();
-                    likes.setText("" + numberOfLikes);
-                    showsSharedPreferences.removeFromLiked(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
+                        userDatabase.removeLikedShow(Show.getInstance().getName());
+                        likeButton.setBackgroundResource(R.drawable.unlike);
+                        int numberOfLikes = Integer.parseInt(likes.getText().toString());
+                        numberOfLikes--;
+                        showsDatabase.removeLikes(show, industry, genre, numberOfLikes);
+                        Toast.makeText(DescriptionFragment.this, "Unlike!!", Toast.LENGTH_SHORT).show();
+                        likes.setText("" + numberOfLikes);
+                        showsSharedPreferences.removeFromLikedShow(mAuth.getCurrentUser().getUid(), Show.getInstance().getName());
                 }
             }
         });

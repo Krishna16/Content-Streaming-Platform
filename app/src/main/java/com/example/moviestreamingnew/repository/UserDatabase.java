@@ -4,22 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.example.moviestreamingnew.NavigationActivity;
-import com.example.moviestreamingnew.SplashActivity;
 import com.example.moviestreamingnew.account.NewUserForm;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
-import com.example.moviestreamingnew.interfaces.OnFirebaseDataRead;
 import com.example.moviestreamingnew.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -186,11 +178,11 @@ public class UserDatabase {
         });
     }
 
-    public void addWatchLater(String show){
+    public void addWatchLaterShow(String show){
         databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterShows").push().setValue(show);
     }
 
-    public void removeWatchLater(String show){
+    public void removeWatchLaterShow(String show){
         databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterShows").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -281,33 +273,49 @@ public class UserDatabase {
                                 i = i + 1;
                                 break;
 
-                        case 2: Iterable<DataSnapshot> liked = item.getChildren();
-                                for (DataSnapshot like: liked){
-                                    user.addToLiked(like.getValue().toString());
+                        case 2: Iterable<DataSnapshot> likedMovies = item.getChildren();
+                                for (DataSnapshot like: likedMovies){
+                                    user.addToLikedMovies(like.getValue().toString());
                                 }
                                 i = i + 1;
                                 break;
 
-                        case 3: user.setName(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 4: user.setPreference(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 5: user.setUid(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 6: Iterable<DataSnapshot> watchLater = item.getChildren();
-                                for (DataSnapshot later: watchLater){
-                                    user.addToWatchLater(later.getValue().toString());
+                        case 3: Iterable<DataSnapshot> likedShows = item.getChildren();
+                                for (DataSnapshot like: likedShows){
+                                    user.addToLikedShows(like.getValue().toString());
                                 }
                                 i = i + 1;
                                 break;
 
-                        default: break;
+                        case 4: user.setName(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 5: user.setPreference(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 6: user.setUid(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case 7: Iterable<DataSnapshot> watchLaterMovies = item.getChildren();
+                                for (DataSnapshot later: watchLaterMovies){
+                                    user.addToWatchLaterMovies(later.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        case 8: Iterable<DataSnapshot> watchLaterShows = item.getChildren();
+                                for (DataSnapshot later: watchLaterShows){
+                                    user.addToWatchLaterShows(later.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        default: if (i >= 9){
+                            break;
+                        }
                     }
                 }
 
@@ -326,6 +334,54 @@ public class UserDatabase {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
+
+            }
+        });
+    }
+
+    public void addLikedMovie(String movie){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("likedMovies").push().setValue(movie);
+    }
+
+    public void removeLikedMovie(String movie){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("likedMovies").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(movie)){
+                        item.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void addWatchLaterMovie(String movie){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterMovies").push().setValue(movie);
+    }
+
+    public void removeWatchLaterMovie(String movie){
+        databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("watchLaterMovies").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+
+                for (DataSnapshot item: children){
+                    if (item.getValue().equals(movie)){
+                        item.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         });

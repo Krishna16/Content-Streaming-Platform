@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.example.moviestreamingnew.models.User;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +77,7 @@ public class ShowsSharedPreferences {
         return likedShows;
     }
 
-    public boolean hasUserLiked(String uid, String show){
+    public boolean hasUserLikedShow(String uid, String show){
         Gson gson = new Gson();
 
         boolean hasLiked = false;
@@ -98,7 +97,7 @@ public class ShowsSharedPreferences {
         return hasLiked;
     }
 
-    public boolean hasUserWatchLater(String uid, String show){
+    public boolean hasUserWatchLaterShow(String uid, String show){
         Gson gson = new Gson();
 
         boolean hasWatchLater = false;
@@ -106,7 +105,7 @@ public class ShowsSharedPreferences {
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
 
-        ArrayList<String> watchLater = user.getWatchLater();
+        ArrayList<String> watchLater = user.getWatchLaterShows();
 
         for (int i = 0; i < watchLater.size(); i++){
             if (show.equals(watchLater.get(i))){
@@ -118,37 +117,37 @@ public class ShowsSharedPreferences {
         return hasWatchLater;
     }
 
-    public void addToWatchLater(String uid, String show){
+    public void addToWatchLaterShow(String uid, String show){
         Gson gson = new Gson();
 
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
 
-        user.addToWatchLater(show);
+        user.addToWatchLaterShows(show);
         storeUserData(user);
     }
 
-    public void addToLiked(String uid, String show){
+    public void addToLikedShow(String uid, String show){
         Gson gson = new Gson();
 
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
 
-        user.addToLiked(show);
+        user.addToLikedShows(show);
         storeUserData(user);
     }
 
-    public void removeFromWatchLater(String uid, String show){
+    public void removeFromWatchLaterShow(String uid, String show){
         Gson gson = new Gson();
 
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
 
-        user.getWatchLater().remove(show);
+        user.getWatchLaterShows().remove(show);
         storeUserData(user);
     }
 
-    public void removeFromLiked(String uid, String show){
+    public void removeFromLikedShow(String uid, String show){
         Gson gson = new Gson();
 
         String userJson = sharedPreferences.getString(uid, "");
@@ -156,5 +155,85 @@ public class ShowsSharedPreferences {
 
         user.getLikedShows().remove(show);
         storeUserData(user);
+    }
+
+    public void addToWatchLaterMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        user.addToWatchLaterMovies(movie);
+        storeUserData(user);
+    }
+
+    public void addToLikedMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        user.addToLikedMovies(movie);
+        storeUserData(user);
+    }
+
+    public void removeFromWatchLaterMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        user.getWatchLaterMovies().remove(movie);
+        storeUserData(user);
+    }
+
+    public void removeFromLikedMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        user.getLikedMovies().remove(movie);
+        storeUserData(user);
+    }
+
+    public boolean hasUserLikedMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        boolean hasLiked = false;
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        ArrayList<String> likedMovies = user.getLikedMovies();
+
+        for (int i = 0; i < likedMovies.size(); i++){
+            if (movie.equals(likedMovies.get(i))){
+                hasLiked = true;
+                break;
+            }
+        }
+
+        return hasLiked;
+    }
+
+    public boolean hasUserWatchLaterMovie(String uid, String movie){
+        Gson gson = new Gson();
+
+        boolean hasWatchLater = false;
+
+        String userJson = sharedPreferences.getString(uid, "");
+        User user = gson.fromJson(userJson, User.class);
+
+        ArrayList<String> watchLaterMovies = user.getWatchLaterMovies();
+
+        for (int i = 0; i < watchLaterMovies.size(); i++){
+            if (movie.equals(watchLaterMovies.get(i))){
+                hasWatchLater = true;
+                break;
+            }
+        }
+
+        return hasWatchLater;
     }
 }

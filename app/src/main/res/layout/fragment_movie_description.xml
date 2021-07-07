@@ -28,7 +28,9 @@
             android:layout_marginEnd="32dp"
             android:src="@drawable/play_button"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout1"
-            app:layout_constraintEnd_toEndOf="@+id/backdrop_image" />
+            app:layout_constraintEnd_toEndOf="@+id/backdrop_image"
+            android:scaleType="fitXY"
+            app:maxImageSize="40dp"/>
 
         <LinearLayout
             android:id="@+id/linearLayout1"

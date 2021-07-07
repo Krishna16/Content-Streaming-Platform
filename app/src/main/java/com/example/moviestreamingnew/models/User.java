@@ -23,6 +23,9 @@ public class User {
     private ArrayList<String> likedShows;
     private ArrayList<String> watchLaterShows;
 
+    private ArrayList<String> likedMovies;
+    private ArrayList<String> watchLaterMovies;
+
     //singleton instance
     private static User user = null;
 
@@ -36,6 +39,9 @@ public class User {
         this.likedShows = new ArrayList<>();
         this.genres = new ArrayList<>();
         this.watchLaterShows = new ArrayList<>();
+
+        this.watchLaterMovies = new ArrayList<>();
+        this.likedMovies = new ArrayList<>();
     }
 
     public User(String name, List<String> genres, String preference, String gender, String industry, ArrayList<String> likedShows) {
@@ -107,10 +113,6 @@ public class User {
         return likedShows;
     }
 
-    public void setLikedMovies(ArrayList<String> likedShows) {
-        this.likedShows = likedShows;
-    }
-
     public String getUid() {
         return uid;
     }
@@ -119,19 +121,43 @@ public class User {
         this.uid = uid;
     }
 
-    public ArrayList<String> getWatchLater() {
+    public ArrayList<String> getWatchLaterShows() {
         return watchLaterShows;
     }
 
-    public void setWatchLater(ArrayList<String> watchLaterShows) {
+    public void setWatchLaterShows(ArrayList<String> watchLaterShows) {
         this.watchLaterShows = watchLaterShows;
     }
 
-    public void addToWatchLater(String show){
+    public void addToWatchLaterShows(String show){
         this.watchLaterShows.add(show);
     }
 
-    public void addToLiked(String show) {
+    public void addToLikedShows(String show) {
         this.likedShows.add(show);
+    }
+
+    public void setLikedMovies(ArrayList<String> likedShows) {
+        this.likedShows = likedShows;
+    }
+
+    public ArrayList<String> getLikedMovies() {
+        return likedMovies;
+    }
+
+    public ArrayList<String> getWatchLaterMovies() {
+        return watchLaterMovies;
+    }
+
+    public void setWatchLaterMovies(ArrayList<String> watchLaterMovies) {
+        this.watchLaterMovies = watchLaterMovies;
+    }
+
+    public void addToWatchLaterMovies(String movie){
+        this.watchLaterMovies.add(movie);
+    }
+
+    public void addToLikedMovies(String movie){
+        this.likedMovies.add(movie);
     }
 }

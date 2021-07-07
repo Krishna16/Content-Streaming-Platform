@@ -41,7 +41,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         //facebook callback manager
         callbackManager = CallbackManager.Factory.create();

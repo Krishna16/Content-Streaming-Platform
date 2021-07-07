@@ -4,18 +4,29 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.Movie;
+import com.example.moviestreamingnew.models.Show;
+import com.example.moviestreamingnew.repository.UserDatabase;
+import com.example.moviestreamingnew.repository.YoutubeAPI;
+import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class MovieDescriptionFragment extends AppCompatActivity {
 
@@ -32,6 +43,14 @@ public class MovieDescriptionFragment extends AppCompatActivity {
     private Button watchLater;
 
     private RecyclerView platforms;
+
+    private Movie movie;
+
+    private UserDatabase userDatabase;
+
+    private FirebaseAuth mAuth;
+
+    private ShowsSharedPreferences showsSharedPreferences;
 
     public MovieDescriptionFragment() {
         // Required empty public constructor
@@ -57,39 +76,87 @@ public class MovieDescriptionFragment extends AppCompatActivity {
 
         platforms = findViewById(R.id.platform_icons_recyclerView);
 
+        movie = (Movie) getIntent().getSerializableExtra("MovieData");
+
+        userDatabase = new UserDatabase(this);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        showsSharedPreferences = new ShowsSharedPreferences(this);
+
+        if (showsSharedPreferences.hasUserWatchLaterMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle())){
+            watchLater.setBackgroundResource(R.drawable.watch_later_selected);
+        }
+
+        if (showsSharedPreferences.hasUserLikedMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle())){
+            like.setBackgroundResource(R.drawable.like);
+        }
+
         setMovieDetails();
 
         trailer_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*YoutubeAPI youtubeAPI = new YoutubeAPI();
-                try {
-                    youtubeAPI.getYoutubeVideoId(Movie.getInstance().getTitle());
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
+                Thread thread = new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+
+                        YoutubeAPI youtubeAPI = new YoutubeAPI();
+                        try {
+                            youtubeAPI.getYoutubeVideoId(movie.getTitle());
+                        } catch (GeneralSecurityException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                thread.start();
             }
         });
 
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (like.getBackground().getConstantState().equals(ContextCompat.getDrawable(MovieDescriptionFragment.this, R.drawable.unlike).getConstantState())){
+                    userDatabase.addLikedMovie(Movie.getInstance().getTitle());
+                    like.setBackgroundResource(R.drawable.like);
+                    Toast.makeText(MovieDescriptionFragment.this, "Like!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.addToLikedMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle());
+                }
 
+                else if (like.getBackground().getConstantState().equals(ContextCompat.getDrawable(MovieDescriptionFragment.this, R.drawable.like).getConstantState())){
+                    userDatabase.removeLikedMovie(Movie.getInstance().getTitle());
+                    like.setBackgroundResource(R.drawable.unlike);
+                    Toast.makeText(MovieDescriptionFragment.this, "Unlike!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.removeFromLikedMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle());
+                }
             }
         });
 
         watchLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(MovieDescriptionFragment.this, R.drawable.watch_later_unselected).getConstantState())) {
+                    userDatabase.addWatchLaterMovie(Movie.getInstance().getTitle());
+                    watchLater.setBackgroundResource(R.drawable.watch_later_selected);
+                    Toast.makeText(MovieDescriptionFragment.this, "Added to watch later successfully!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.addToWatchLaterMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle());
+                }
 
+                else if (watchLater.getBackground().getConstantState().equals(ContextCompat.getDrawable(MovieDescriptionFragment.this, R.drawable.watch_later_selected).getConstantState())){
+                    userDatabase.removeWatchLaterMovie(Movie.getInstance().getTitle());
+                    watchLater.setBackgroundResource(R.drawable.watch_later_unselected);
+                    Toast.makeText(MovieDescriptionFragment.this, "Removed from watch later successfully!!", Toast.LENGTH_SHORT).show();
+                    showsSharedPreferences.removeFromWatchLaterMovie(mAuth.getCurrentUser().getUid(), Movie.getInstance().getTitle());
+                }
             }
         });
     }
 
     public void setMovieDetails(){
-        Movie movie = (Movie) getIntent().getSerializableExtra("MovieData");
         description.setText(Movie.getInstance().getDescription());
 
         Glide.with(this)

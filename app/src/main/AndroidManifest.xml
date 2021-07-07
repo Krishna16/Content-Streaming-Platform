@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,16 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".account.NewUserForm"></activity>
+        <activity android:name=".ui.movie_trailer_view.MovieTrailerActivity"></activity>
+        <activity android:name=".account.NewUserForm" />
         <activity android:name=".account.SignUp" />
         <activity android:name=".account.Login" />
-        <activity android:name=".ui.description.DescriptionFragment"/>
-        <activity android:name=".ui.videoview.VideoFragment"/>
-        <activity android:name=".ui.movie_description.MovieDescriptionFragment"/>
+        <activity android:name=".ui.description.DescriptionFragment" />
+        <activity android:name=".ui.videoview.VideoFragment" />
+        <activity android:name=".ui.movie_description.MovieDescriptionFragment" />
         <activity
             android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation"
-            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"/>
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
+            android:label="@string/title_activity_navigation" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
