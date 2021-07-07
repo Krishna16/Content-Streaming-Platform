@@ -45,6 +45,7 @@ public class Storage {
         this.comedyImages = new ArrayList<>();
         this.scienceFictionImages = new ArrayList<>();
         this.context = context;
+        this.allGenres = new ArrayList<>();
     }
 
     public static synchronized Storage getInstance(){
@@ -213,7 +214,6 @@ public class Storage {
     public ArrayList<Video> getEpisodes(String show, String industry, String genre){
         StorageReference storageReference = firebaseStorage.getReference();
         StorageReference videoReference = storageReference.child("videos/" + genre + "/" + industry + "/" + show);
-        //StorageReference videoReference = storageReference.child("images/" + genre + "/" + industry);
 
         ArrayList<Video> allVideos = new ArrayList<>();
 

@@ -48,7 +48,7 @@
                 android:overScrollMode="always">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/shows_with_genre_view"
+                    android:id="@+id/movies_with_genre_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 

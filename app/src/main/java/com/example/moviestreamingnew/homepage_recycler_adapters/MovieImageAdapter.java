@@ -51,11 +51,6 @@ public class MovieImageAdapter extends RecyclerView.Adapter<MovieImageAdapter.Vi
         RequestOptions defaultOptions = new RequestOptions()
                 .error(R.drawable.ic_launcher_background);
 
-        /*Glide.with(mContext)
-                .setDefaultRequestOptions(defaultOptions)
-                .load(movieImages.get(position))
-                .into(holder.movieImage);*/
-
         Log.d("MovieImage: ", "" + movieImages.get(position).getImage());
 
         Glide.with(mContext)
@@ -63,8 +58,6 @@ public class MovieImageAdapter extends RecyclerView.Adapter<MovieImageAdapter.Vi
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.movieImage);
-
-        //imageLoader.DisplayImage(movieImages.get(position).getImage(), holder.movieImage);
 
         holder.movieImage.setOnClickListener(new View.OnClickListener() {
             @Override

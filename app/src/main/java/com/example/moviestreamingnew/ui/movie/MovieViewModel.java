@@ -1,17 +1,18 @@
-package com.example.moviestreamingnew.ui.home;
+package com.example.moviestreamingnew.ui.movie;
 
-import androidx.lifecycle.LiveData;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.ShowWithGenreParent;
+import com.example.moviestreamingnew.repository.MovieAPI;
 import com.example.moviestreamingnew.repository.Storage;
 
 import java.util.ArrayList;
 
-public class HomeViewModel extends ViewModel {
-
+public class MovieViewModel extends ViewModel {
     private ArrayList<CardImageChild> images1;
     private ArrayList<CardImageChild> images2;
     private ArrayList<CardImageChild> images3;
@@ -19,7 +20,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<ArrayList<ShowWithGenreParent>> showWithGenreParent;
     private Storage storage;
 
-    public HomeViewModel() {
+    public MovieViewModel() {
         storage = Storage.getInstance();
 
         images1 = new ArrayList<>();
@@ -30,15 +31,32 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void setImages1(String genre) {
-        images1 = storage.downloadMovieImages(genre);
+        //images1 = storage.downloadMovieImages(genre);
+        MovieAPI movieAPI = new MovieAPI(genre);
+
+        images1 = movieAPI.getMoviesByGenre();
+
+        Log.d("SetImages1", "Genre: " + genre);
+
+        //movieAPI.getMoviesByGenre(genre);
     }
 
     public void setImages2(String genre) {
-        images2 = storage.downloadMovieImages(genre);
+        //images2 = storage.downloadMovieImages(genre);
+        MovieAPI movieAPI = new MovieAPI(genre);
+
+        images2 = movieAPI.getMoviesByGenre();
+
+        Log.d("SetImages1", "Genre: " + genre);
     }
 
     public void setImages3(String genre) {
-        images3 = storage.downloadMovieImages(genre);
+        //images3 = storage.downloadMovieImages(genre);
+        MovieAPI movieAPI = new MovieAPI(genre);
+
+        images3 = movieAPI.getMoviesByGenre();
+
+        Log.d("SetImages1", "Genre: " + genre);
     }
 
     public MutableLiveData<ArrayList<ShowWithGenreParent>> getShowWithGenreParent() {
@@ -51,6 +69,10 @@ public class HomeViewModel extends ViewModel {
         temp.add(new ShowWithGenreParent(genre1, images1));
         temp.add(new ShowWithGenreParent(genre2, images2));
         temp.add(new ShowWithGenreParent(genre3, images3));
+
+        Log.d("MovieViewModel", "Images1: " + images1.size());
+        Log.d("MovieViewModel", "Images2: " + images2.size());
+        Log.d("MovieViewModel", "Images3: " + images3.size());
 
         this.showWithGenreParent.setValue(temp);
     }

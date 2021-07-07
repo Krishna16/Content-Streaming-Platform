@@ -8,15 +8,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.moviestreamingnew.R;
+import com.google.android.material.tabs.TabLayout;
 
 public class FindFragment extends Fragment {
 
     private FindViewModel dashboardViewModel;
+
+    private TabLayout show_movie_layout;
+    private Toolbar toolbar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,6 +35,13 @@ public class FindFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        this.show_movie_layout = getActivity().findViewById(R.id.show_movie_tab_layout);
+        this.toolbar = getActivity().findViewById(R.id.custom_toolbar);
+
+        show_movie_layout.setVisibility(View.GONE);
+        toolbar.setVisibility(View.GONE);
+
         return root;
     }
 }

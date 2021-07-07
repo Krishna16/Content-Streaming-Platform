@@ -1,23 +1,13 @@
 package com.example.moviestreamingnew.ui.videoview;
 
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
 import com.example.moviestreamingnew.R;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -27,23 +17,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabLayout;
 
-public class VideoFragment extends Fragment {
-
-    private VideoViewModel mViewModel;
-
-    private View root;
-
-    //private VideoView episode_view;
+public class VideoFragment extends AppCompatActivity {
 
     private PlayerView exoplayer_video_view;
     private Player player;
 
     private String videoUrl;
-
-    private BottomNavigationView bottomNavigationView;
 
     private boolean playWhenReady = true;
     private int currentWindow = 0;
@@ -58,15 +38,13 @@ public class VideoFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(VideoViewModel.class);
-        root = inflater.inflate(R.layout.video_fragment, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.video_fragment);
 
-        //episode_view = root.findViewById(R.id.episode_video_view);
-        bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+        exoplayer_video_view = findViewById(R.id.exoplayer_video_view);
 
-        exoplayer_video_view = root.findViewById(R.id.exoplayer_video_view);
+        this.videoUrl = getIntent().getStringExtra("videoUrl");
 
         //MediaController mediaController = new MediaController(root.getContext());
         //mediaController.setAnchorView(episode_view);
@@ -78,16 +56,12 @@ public class VideoFragment extends Fragment {
         episode_view.requestFocus();
         episode_view.start();*/
 
-        bottomNavigationView.setVisibility(View.GONE);
+        //bottomNavigationView.setVisibility(View.GONE);
 
-        TabLayout showMovieLayout = getActivity().findViewById(R.id.show_movie_tab_layout);
-        showMovieLayout.setVisibility(View.GONE);
+        //TabLayout showMovieLayout = getActivity().findViewById(R.id.show_movie_tab_layout);
+        //showMovieLayout.setVisibility(View.GONE);
 
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        return root;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     @Override
@@ -124,7 +98,8 @@ public class VideoFragment extends Fragment {
     }
 
     private void initializePlayer(){
-        player = new SimpleExoPlayer.Builder(root.getContext()).build();
+        //player = new SimpleExoPlayer.Builder(root.getContext()).build();
+        player = new SimpleExoPlayer.Builder(this).build();
         exoplayer_video_view.setPlayer(player);
         MediaItem video = MediaItem.fromUri(videoUrl);
         player.setMediaItem(video);

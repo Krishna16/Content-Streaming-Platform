@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,12 +58,16 @@ public class ShowEpisodesAdapter extends RecyclerView.Adapter<ShowEpisodesAdapte
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context, "" + episodeTitles.get(position).getVideoUrl(), Toast.LENGTH_LONG).show();
-                VideoFragment nameFragment = new VideoFragment(episodeTitles.get(position).getVideoUrl());
+                //VideoFragment nameFragment = new VideoFragment(episodeTitles.get(position).getVideoUrl());
 
-                FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, nameFragment);
+                /*FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.video_container, nameFragment);
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commit();*/
+
+                Intent intent = new Intent(context, VideoFragment.class);
+                intent.putExtra("videoUrl", episodeTitles.get(position).getVideoUrl());
+                context.startActivity(intent);
             }
         });
     }

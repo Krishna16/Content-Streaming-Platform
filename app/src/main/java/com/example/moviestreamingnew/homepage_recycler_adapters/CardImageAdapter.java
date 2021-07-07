@@ -1,14 +1,20 @@
 package com.example.moviestreamingnew.homepage_recycler_adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -16,7 +22,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.common.BlurTransformation;
+import com.example.moviestreamingnew.models.Movie;
+import com.example.moviestreamingnew.repository.MovieAPI;
 import com.example.moviestreamingnew.repository.ShowsDatabase;
+import com.example.moviestreamingnew.ui.movie_description.MovieDescriptionFragment;
 
 import java.util.List;
 
@@ -24,10 +34,12 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
 
     private List<CardImageChild> itemList;
     private Context context;
+    private MovieAPI movieAPI;
 
     public CardImageAdapter(List<CardImageChild> list, Context context){
         this.itemList = list;
         this.context = context;
+        this.movieAPI = new MovieAPI();
     }
 
     @NonNull
@@ -62,32 +74,56 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
 
         Glide.with(context)
                 .load(childItem.getImage())
+                .transform(new BlurTransformation(context))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.cardBlurImage);
+
+        Glide.with(context)
+                .load(childItem.getImage())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.cardImage);
 
-        //imageLoader.DisplayImage(childItem.getImage(), holder.cardImage);
+        //for TV shows (synced with firebase)
+        //firebase path will contain "/" symbol
+        if (childItem.getPath().contains("/")) {
+            holder.cardImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String[] elements = childItem.getPath().split("/");
 
-        holder.cardImage.setTag(childItem.getImage());
+                    String show = elements[elements.length - 1];
+                    String industry = elements[elements.length - 2];
+                    String genre = elements[elements.length - 3];
 
-        holder.cardImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String [] elements = childItem.getPath().split("/");
+                    if (show.indexOf(".") > 0)
+                        show = show.substring(0, show.lastIndexOf("."));
 
-                String show = elements[elements.length - 1];
-                String industry = elements[elements.length - 2];
-                String genre = elements[elements.length - 3];
+                    ShowsDatabase showsDatabase = new ShowsDatabase(context);
 
-                if (show.indexOf(".") > 0)
-                    show = show.substring(0, show.lastIndexOf("."));
+                    //description fragment will open from this method
+                    showsDatabase.getDetails(show, industry, genre, childItem.getImage());
+                }
+            });
+        }
 
-                ShowsDatabase showsDatabase = new ShowsDatabase(context);
+        //for movies (getting data from MovieAPI) (MovieViewModel calls MovieAPI)
+        else{
+            holder.cardImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(context, "Clicked on: " + childItem.getPath(), Toast.LENGTH_SHORT).show();
 
-                //description fragment will open from this method
-                showsDatabase.getDetails(show, industry, genre, childItem.getImage());
-            }
-        });
+                    //Movie movie = movieAPI.getMovieByName(childItem.getPath());
+                    //Movie movie = movieAPI.getMovieById(childItem.getMovie_id(), context);
+                    //movieAPI.getMovieWatchProviders(childItem.getMovie_id());
+
+                    //this method will open the Movie Description Fragment
+                    movieAPI.getMovieById(childItem.getMovie_id(), context);
+                }
+            });
+        }
     }
 
     @Override
@@ -97,10 +133,12 @@ public class CardImageAdapter extends RecyclerView.Adapter<CardImageAdapter.Card
 
     public class CardViewHolder extends RecyclerView.ViewHolder{
         private ImageView cardImage;
+        private ImageView cardBlurImage;
 
         public CardViewHolder(View itemView){
             super(itemView);
             this.cardImage = itemView.findViewById(R.id.cardView_image);
+            this.cardBlurImage = itemView.findViewById(R.id.cardView_blur_image);
         }
     }
 }

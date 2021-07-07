@@ -10,6 +10,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,6 +19,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.repository.UserDatabase;
+import com.example.moviestreamingnew.ui.home.HomeFragment;
+import com.example.moviestreamingnew.ui.movie.MovieFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -67,7 +71,21 @@ public class NavigationActivity extends AppCompatActivity {
         show_movie_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0){
+                    HomeFragment homeFragment = new HomeFragment();
 
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, homeFragment);
+                    transaction.commit();
+                }
+
+                else {
+                    MovieFragment movieFragment = new MovieFragment();
+
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, movieFragment);
+                    transaction.commit();
+                }
             }
 
             @Override

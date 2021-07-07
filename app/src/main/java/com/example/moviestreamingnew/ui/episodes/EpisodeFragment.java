@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -86,23 +87,9 @@ public class EpisodeFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_episode, container, false);
 
-        /*ExecutorService pool = Executors.newFixedThreadPool(1);
-        pool.execute(new Runnable() {
-            @Override
-            public void run() {
-                //videos = storage.getEpisodes(show, industry, genre);
-                videos.add(new Video("The Hofstadter Insufficiency", "The Hofstadter Insufficiency"));
-                videos.add(new Video("Sheldon Going Crazy", "Sheldon Going Crazy"));
-                videos.add(new Video("Penny Going Crazy", "Penny Going Crazy"));
-                videos.add(new Video("Rajesh Going Crazy", "Rajesh Going Crazy"));
-            }
-        });
-
-        try {
-            pool.awaitTermination(2000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        Log.d("Episode Fragment: ", "Show: " + show);
+        Log.d("Episode Fragment: ", "Industry: " + industry);
+        Log.d("Episode Fragment: ", "Genre: " + genre);
 
         this.progressBar = root.findViewById(R.id.progress_bar);
 

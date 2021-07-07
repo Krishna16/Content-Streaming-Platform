@@ -7,20 +7,29 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
         app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/cardView_image"
             android:layout_width="190dp"
             android:layout_height="110dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bates_motel" />
+            android:src="@drawable/example1"
+            android:id="@+id/cardView_blur_image"/>
+
+        <ImageView
+            android:id="@+id/cardView_image"
+            android:layout_width="190dp"
+            android:layout_height="110dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/example1"
+            android:adjustViewBounds="true"/>
 
     </androidx.cardview.widget.CardView>
 

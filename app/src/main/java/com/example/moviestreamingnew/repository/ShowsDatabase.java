@@ -3,6 +3,7 @@ package com.example.moviestreamingnew.repository;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -125,14 +126,19 @@ public class ShowsDatabase {
 
                             getData.start();
 
-                            Log.d("ShowsDatabase: ", "hasWatchLater: " + hasWatchLater);
+                            DescriptionFragment descriptionFragment = new DescriptionFragment(image, show, industry, genre);
 
-                            DescriptionFragment descriptionFragment = new DescriptionFragment(image, show, industry, genre, hasLiked, hasWatchLater);
-
-                            FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                            /*FragmentTransaction transaction =  ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.nav_host_fragment, descriptionFragment);
                             transaction.addToBackStack("description");
-                            transaction.commit();
+                            transaction.commit();*/
+
+                            Intent intent = new Intent(context, descriptionFragment.getClass());
+                            intent.putExtra("image", image);
+                            intent.putExtra("show", show);
+                            intent.putExtra("industry", industry);
+                            intent.putExtra("genre", genre);
+                            context.startActivity(intent);
 
                             progressDialog.dismiss();
                         }

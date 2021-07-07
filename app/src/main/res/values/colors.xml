@@ -15,5 +15,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="shadow">#555555</color>
+    <color name="title">#777777</color>
+
     <color name="textInputEditTextHintColor">@android:color/darker_gray</color>
 </resources>

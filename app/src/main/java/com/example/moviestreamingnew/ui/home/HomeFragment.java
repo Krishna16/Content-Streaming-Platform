@@ -93,27 +93,6 @@ public class HomeFragment extends Fragment{
 
         show_movie_layout = getActivity().findViewById(R.id.show_movie_tab_layout);
 
-        /*show_movie_layout.addTab(show_movie_layout.newTab().setText("Tv Shows"));
-        show_movie_layout.addTab(show_movie_layout.newTab().setText("Movies"));
-        show_movie_layout.setTabTextColors(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
-
-        show_movie_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });*/
-
         makeActionBarVisible();
 
         /*final Observer<ArrayList<ShowWithGenreParent>> showWithGenreParentObserver = new Observer<ArrayList<ShowWithGenreParent>>() {
