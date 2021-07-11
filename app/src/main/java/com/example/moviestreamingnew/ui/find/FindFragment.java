@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.ui.find;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.moviestreamingnew.R;
 import com.google.android.material.tabs.TabLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 public class FindFragment extends Fragment {
 
@@ -42,6 +45,14 @@ public class FindFragment extends Fragment {
         show_movie_layout.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
 
+        //getActivity().getSupportFragmentManager().popBackStack();
+
         return root;
+    }
+
+    @Override
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
+        //getActivity().getSupportFragmentManager().popBackStack();
     }
 }

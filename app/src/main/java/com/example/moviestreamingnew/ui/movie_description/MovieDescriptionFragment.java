@@ -2,27 +2,41 @@ package com.example.moviestreamingnew.ui.movie_description;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.R;
+import com.example.moviestreamingnew.adapters.PlatformAdapter;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
+import com.example.moviestreamingnew.homepage_recycler_adapters.MovieImageAdapter;
 import com.example.moviestreamingnew.models.Movie;
 import com.example.moviestreamingnew.models.Show;
 import com.example.moviestreamingnew.repository.UserDatabase;
 import com.example.moviestreamingnew.repository.YoutubeAPI;
 import com.example.moviestreamingnew.ui.description.DescriptionFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
@@ -35,6 +49,8 @@ public class MovieDescriptionFragment extends AppCompatActivity {
     private TextView description;
     private TextView rating;
     private TextView title;
+    private TextView genres;
+    private TextView notAvailableInCountry;
 
     private ImageView poster;
     private ImageView backdrop;
@@ -52,6 +68,9 @@ public class MovieDescriptionFragment extends AppCompatActivity {
 
     private ShowsSharedPreferences showsSharedPreferences;
 
+    private PlatformAdapter platformAdapter;
+    private LinearLayoutManager linearLayoutManager;
+
     public MovieDescriptionFragment() {
         // Required empty public constructor
     }
@@ -67,6 +86,9 @@ public class MovieDescriptionFragment extends AppCompatActivity {
         description = findViewById(R.id.movie_description);
         rating = findViewById(R.id.movie_rating);
         title = findViewById(R.id.movie_title);
+        genres = findViewById(R.id.movie_genres);
+        genres.setText("");
+        notAvailableInCountry = findViewById(R.id.not_available);
 
         poster = findViewById(R.id.movie_poster);
         backdrop = findViewById(R.id.backdrop_image);
@@ -75,6 +97,9 @@ public class MovieDescriptionFragment extends AppCompatActivity {
         watchLater = findViewById(R.id.watch_later);
 
         platforms = findViewById(R.id.platform_icons_recyclerView);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         movie = (Movie) getIntent().getSerializableExtra("MovieData");
 
@@ -174,5 +199,56 @@ public class MovieDescriptionFragment extends AppCompatActivity {
         rating.setText("Rating: " + movie.getRating());
 
         title.setText(movie.getTitle());
+
+        genres.clearComposingText();
+        genres.setText("Genres: ");
+        for (int i = 0; i < movie.getGenres().size(); i++){
+            if (movie.getGenres().size() != 1)
+                genres.append(movie.getGenres().get(i) + ", ");
+
+            else if (i == movie.getGenres().size() - 1){
+                genres.append(movie.getGenres().get(i));
+            }
+
+            else
+                genres.append(movie.getGenres().get(i));
+        }
+
+        if (movie.getGenres().size() > 1) {
+            int lastComma = genres.getText().toString().lastIndexOf(",");
+            StringBuilder sb = new StringBuilder(genres.getText().toString());
+            sb.deleteCharAt(genres.getText().toString().lastIndexOf(","));
+        }
+
+        Log.d("MovieAPI", "Available in country: " + Movie.getInstance().isAvailableInCountry());
+        if (!Movie.getInstance().isAvailableInCountry()){
+            notAvailableInCountry.setVisibility(View.VISIBLE);
+            platforms.setVisibility(View.GONE);
+        }
+
+        else{
+            notAvailableInCountry.setVisibility(View.GONE);
+            platforms.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Movie.getInstance().isAvailableInCountry()){
+                    platformAdapter = new PlatformAdapter(Movie.getInstance().getWatchProviders());
+
+                    platforms.setLayoutManager(new LinearLayoutManager(MovieDescriptionFragment.this));
+                    platforms.setAdapter(platformAdapter);
+                    platforms.setHasFixedSize(true);
+
+                    platformAdapter.notifyDataSetChanged();
+                }
+            }
+        }, 1500);
     }
 }

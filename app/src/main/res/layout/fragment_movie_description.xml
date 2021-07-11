@@ -26,11 +26,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
+            android:scaleType="fitXY"
             android:src="@drawable/play_button"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout1"
             app:layout_constraintEnd_toEndOf="@+id/backdrop_image"
-            android:scaleType="fitXY"
-            app:maxImageSize="40dp"/>
+            app:maxImageSize="40dp" />
 
         <LinearLayout
             android:id="@+id/linearLayout1"
@@ -58,14 +58,14 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/movie_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="The Big Bang Theory"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:id="@+id/movie_title"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,11 +77,30 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/platform_icons_recyclerView"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="16dp" />
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/platform_icons_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"/>
+
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/not_available"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="This content is either not available in your country or hasn't released yet."
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -174,6 +193,18 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/likes_watch_layout" />
+
+        <TextView
+            android:id="@+id/movie_genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:text="Genres: "
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/movie_rating" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

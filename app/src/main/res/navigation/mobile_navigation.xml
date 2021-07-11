@@ -10,11 +10,14 @@
         android:name="com.example.moviestreamingnew.ui.home.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_navigation_home_to_movies_fragment"
+            app:destination="@id/movies_fragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+        <action
             android:id="@+id/action_navigation_home_to_navigation_find"
             app:destination="@id/navigation_find" />
-        <action
-            android:id="@+id/action_navigation_home_to_description_fragment"
-            app:destination="@id/description_fragment" />
     </fragment>
 
     <fragment
@@ -23,13 +26,20 @@
         tools:layout="@layout/fragment_find" />
 
     <fragment
-        android:id="@+id/navigation_downloads"
+        android:id="@+id/navigation_profile"
         android:name="com.example.moviestreamingnew.ui.profile.ProfileFragment"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
-        android:id="@+id/description_fragment"
-        android:name="com.example.moviestreamingnew.ui.description.DescriptionFragment"
-        tools:layout="@layout/fragment_description"/>
+        android:id="@+id/movies_fragment"
+        android:name="com.example.moviestreamingnew.ui.movie.MovieFragment"
+        tools:layout="@layout/fragment_movie">
+        <action
+            android:id="@+id/action_movies_fragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+        <action
+            android:id="@+id/action_movies_fragment_to_navigation_find"
+            app:destination="@id/navigation_find" />
+    </fragment>
 
 </navigation>

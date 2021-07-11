@@ -17,6 +17,9 @@ public class MovieViewModel extends ViewModel {
     private ArrayList<CardImageChild> images2;
     private ArrayList<CardImageChild> images3;
 
+    private ArrayList<CardImageChild> upcoming;
+    private ArrayList<CardImageChild> trending;
+
     private MutableLiveData<ArrayList<ShowWithGenreParent>> showWithGenreParent;
     private Storage storage;
 
@@ -26,6 +29,9 @@ public class MovieViewModel extends ViewModel {
         images1 = new ArrayList<>();
         images2 = new ArrayList<>();
         images3 = new ArrayList<>();
+
+        upcoming = new ArrayList<>();
+        trending = new ArrayList<>();
 
         showWithGenreParent = new MutableLiveData<>();
     }
@@ -59,6 +65,18 @@ public class MovieViewModel extends ViewModel {
         Log.d("SetImages1", "Genre: " + genre);
     }
 
+    public void setUpcoming(){
+        MovieAPI movieAPI = new MovieAPI();
+
+        upcoming = movieAPI.getUpcomingMovies();
+    }
+
+    public void setTrending(){
+        MovieAPI movieAPI = new MovieAPI();
+
+        trending = movieAPI.getTrendingMovies();
+    }
+
     public MutableLiveData<ArrayList<ShowWithGenreParent>> getShowWithGenreParent() {
         return showWithGenreParent;
     }
@@ -69,6 +87,8 @@ public class MovieViewModel extends ViewModel {
         temp.add(new ShowWithGenreParent(genre1, images1));
         temp.add(new ShowWithGenreParent(genre2, images2));
         temp.add(new ShowWithGenreParent(genre3, images3));
+        temp.add(new ShowWithGenreParent("Upcoming", upcoming));
+        temp.add(new ShowWithGenreParent("Trending", trending));
 
         Log.d("MovieViewModel", "Images1: " + images1.size());
         Log.d("MovieViewModel", "Images2: " + images2.size());

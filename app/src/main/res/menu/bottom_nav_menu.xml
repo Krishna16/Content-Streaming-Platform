@@ -12,7 +12,7 @@
         android:title="@string/title_find" />
 
     <item
-        android:id="@+id/navigation_downloads"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/profile_icon"
         android:title="@string/title_profile" />
 

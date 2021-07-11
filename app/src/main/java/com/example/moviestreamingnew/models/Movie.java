@@ -12,9 +12,15 @@ public class Movie implements Serializable {
     private String rating;
     private ArrayList<String> watchProviders;
 
+    private ArrayList<String> genres;
+
+    private boolean isAvailableInCountry;
+
     public static Movie movie;
 
     public Movie() {
+        watchProviders = new ArrayList<>();
+        genres = new ArrayList<>();
     }
 
     public Movie(String movie_id, String backdrop_path, String title, String description, String poster_path, String rating) {
@@ -88,5 +94,34 @@ public class Movie implements Serializable {
 
     public void setWatchProviders(ArrayList<String> watchProviders) {
         this.watchProviders = watchProviders;
+    }
+
+    public void setWatchProviders(String watchProvider) {
+        this.watchProviders.add(watchProvider);
+    }
+
+    public ArrayList<String> getGenres(){
+        return this.genres;
+    }
+
+    public void setGenres(String genre){
+        boolean isPresent = false;
+
+        for (int i = 0; i < this.genres.size(); i++){
+            if (this.genres.get(i).equals(genre)){
+                isPresent = true;
+            }
+        }
+
+        if (!isPresent)
+            genres.add(genre);
+    }
+
+    public boolean isAvailableInCountry() {
+        return isAvailableInCountry;
+    }
+
+    public void setAvailableInCountry(boolean availableInCountry) {
+        isAvailableInCountry = availableInCountry;
     }
 }

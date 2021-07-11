@@ -132,6 +132,9 @@ public class MovieFragment extends Fragment {
         movieViewModel.setImages2(selectedGenres.get(1));
         movieViewModel.setImages3(selectedGenres.get(2));
 
+        movieViewModel.setUpcoming();
+        movieViewModel.setTrending();
+
         Thread thread = new Thread(){
             @Override
             public void run() {

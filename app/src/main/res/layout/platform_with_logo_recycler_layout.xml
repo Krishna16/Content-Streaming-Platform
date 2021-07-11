@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,11 +12,11 @@
         android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:cardBackgroundColor="@color/colorPrimary"
         app:contentPadding="10dp"
         app:cardCornerRadius="5dp"
         android:background="@drawable/cardview_genre_unselected"
-        app:cardElevation="10dp">
+        app:cardElevation="10dp"
+        app:cardBackgroundColor="@color/colorPrimary">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,15 +27,17 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:id="@+id/platform_logo"
-                android:src="@drawable/netflix"/>
+                android:src="@drawable/netflix"
+                android:maxWidth="50dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/platform_name"
-                android:text="Netflix"
+                android:text=""
                 android:layout_marginStart="16dp"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 

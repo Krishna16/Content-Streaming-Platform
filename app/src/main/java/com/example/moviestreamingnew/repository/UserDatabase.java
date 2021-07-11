@@ -313,7 +313,8 @@ public class UserDatabase {
                                 i = i + 1;
                                 break;
 
-                        default: if (i >= 9){
+                        default: i = i + 1;
+                            if (i >= 9){
                             break;
                         }
                     }
