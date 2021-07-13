@@ -19,6 +19,7 @@
         android:background="@drawable/profile_edittext"
         android:text="Science Fiction"
         android:padding="8dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:gravity="center"/>
 
 </LinearLayout>

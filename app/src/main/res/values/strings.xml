@@ -14,4 +14,14 @@
     <string name="empty" />
 
     <string name="youtube_api_key">AIzaSyCGIbCVtQ9lbfARjwk5iRqfNKPyRhwDLlU</string>
+
+    <string-array name="preferences">
+        <item>OTT Platform</item>
+        <item>Movie Theatre</item>
+    </string-array>
+
+    <string-array name="industry">
+        <item>Bollywood</item>
+        <item>Hollywood</item>
+    </string-array>
 </resources>

@@ -1,23 +1,22 @@
 package com.example.moviestreamingnew.ui.profile;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,14 +25,16 @@ import androidx.transition.TransitionManager;
 
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.adapters.ProfileContentAdapter;
+import com.example.moviestreamingnew.common.NetworkCheck;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.User;
+import com.example.moviestreamingnew.repository.UserDatabase;
+import com.example.moviestreamingnew.ui.new_user_form.GenreFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -83,15 +84,24 @@ public class ProfileFragment extends Fragment {
     private EditText genre2;
     private EditText genre3;
 
+    private EditText name;
+
     private FirebaseAuth mAuth;
 
     private User user;
+
+    private Spinner preference;
+    private Spinner industry;
+
+    private View root;
+
+    private TextView welcomeText;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel =
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_profile, container, false);
+        root = inflater.inflate(R.layout.fragment_profile, container, false);
         /*notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -142,31 +152,22 @@ public class ProfileFragment extends Fragment {
         genre2 = root.findViewById(R.id.genre2_editText);
         genre3 = root.findViewById(R.id.genre3_editText);
 
+        name = root.findViewById(R.id.name_editText);
+        welcomeText = root.findViewById(R.id.welcome_textView);
+
+        preference = root.findViewById(R.id.preference_spinner);
+        industry = root.findViewById(R.id.industry_spinner);
+
         mAuth = FirebaseAuth.getInstance();
 
         user = showsSharedPreferences.getUserData(mAuth.getCurrentUser().getUid());
 
-        profileContentAdapter = new ProfileContentAdapter(user.getLikedShows());
-        profileContentAdapter1 = new ProfileContentAdapter(user.getWatchLaterShows());
-        profileContentAdapter2 = new ProfileContentAdapter(user.getLikedMovies());
-        profileContentAdapter3 = new ProfileContentAdapter(user.getWatchLaterMovies());
+        name.setText(user.getName());
+        welcomeText.setText("Hey, " + user.getName() + "!");
 
-        Log.d("Profile fragment", "Liked shows size: " + user.getLikedShows().size());
-        Log.d("Profile fragment", "Liked movies size: " + user.getLikedMovies().size());
-        Log.d("Profile fragment", "Watch later shows size: " + user.getWatchLaterShows().size());
-        Log.d("Profile fragment", "Watch later movies size: " + user.getWatchLaterMovies().size());
+        setRecyclerViews();
 
-        likedShowsRecyclerView.setLayoutManager(linearLayoutManager);
-        likedShowsRecyclerView.setAdapter(profileContentAdapter);
-
-        watchLaterShowsRecyclerView.setLayoutManager(linearLayoutManager1);
-        watchLaterShowsRecyclerView.setAdapter(profileContentAdapter1);
-
-        likedMoviesRecyclerView.setLayoutManager(linearLayoutManager2);
-        likedMoviesRecyclerView.setAdapter(profileContentAdapter2);
-
-        watchLaterMoviesRecyclerView.setLayoutManager(linearLayoutManager3);
-        watchLaterMoviesRecyclerView.setAdapter(profileContentAdapter3);
+        setSpinners();
 
         genresCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,27 +288,105 @@ public class ProfileFragment extends Fragment {
         show_movie_layout.setVisibility(View.GONE);
         toolbar.setVisibility(View.GONE);
 
+        Log.d("Profile Fragment", "Context getClass: " + root.getContext().getClass());
+
+        root.findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateInputs()){
+                    if (NetworkCheck.networkCheck(root.getContext())){
+                        user.setName(name.getText().toString());
+                        user.setPreference(preference.getSelectedItem().toString());
+                        user.setIndustry(industry.getSelectedItem().toString());
+
+                        List<String> temp = new ArrayList<>();
+                        temp.add(genre1.getText().toString());
+                        temp.add(genre2.getText().toString());
+                        temp.add(genre3.getText().toString());
+
+                        user.setGenres(temp);
+
+                        //uploading to firebase
+                        UserDatabase userDatabase = new UserDatabase(root.getContext());
+                        userDatabase.uploadUserData(user);
+
+                        //updating in shared preferences
+                        showsSharedPreferences.storeUserData(user);
+                    }
+
+                    else{
+                        Toast.makeText(root.getContext(), "Please check your network connection!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        root.findViewById(R.id.edit_genres).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GenreFragment genreFragment = new GenreFragment(root.getContext());
+
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, genreFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
         return root;
     }
 
-    @Override
-    public void onAttach(@NonNull @NotNull Context context) {
-        super.onAttach(context);
+    private void setRecyclerViews() {
+        profileContentAdapter = new ProfileContentAdapter(user.getLikedShows());
+        profileContentAdapter1 = new ProfileContentAdapter(user.getWatchLaterShows());
+        profileContentAdapter2 = new ProfileContentAdapter(user.getLikedMovies());
+        profileContentAdapter3 = new ProfileContentAdapter(user.getWatchLaterMovies());
 
-        //getActivity().getSupportFragmentManager().popBackStackImmediate();
+        likedShowsRecyclerView.setLayoutManager(linearLayoutManager);
+        likedShowsRecyclerView.setAdapter(profileContentAdapter);
 
-        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("HomeFragment");
-        if(fragment != null)
-            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        watchLaterShowsRecyclerView.setLayoutManager(linearLayoutManager1);
+        watchLaterShowsRecyclerView.setAdapter(profileContentAdapter1);
 
-        Fragment fragment1 = getActivity().getSupportFragmentManager().findFragmentByTag("MovieFragment");
-        if(fragment1 != null)
-            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        likedMoviesRecyclerView.setLayoutManager(linearLayoutManager2);
+        likedMoviesRecyclerView.setAdapter(profileContentAdapter2);
 
-        /*for (int i = 0; i < getActivity().getSupportFragmentManager().getBackStackEntryCount(); i++){
-            getActivity().getSupportFragmentManager().popBackStack();
-        }*/
+        watchLaterMoviesRecyclerView.setLayoutManager(linearLayoutManager3);
+        watchLaterMoviesRecyclerView.setAdapter(profileContentAdapter3);
+    }
 
-        //((AppCompatActivity)getContext()).getSupportFragmentManager().popBackStack("String name", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    private void setSpinners(){
+        ArrayAdapter<CharSequence> industrySpinnerAdapter = ArrayAdapter.createFromResource(root.getContext(), R.array.industry, R.layout.profile_spinner_item_layout);
+        industrySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        industry.setAdapter(industrySpinnerAdapter);
+
+        ArrayAdapter<CharSequence> preferenceSpinnerAdapter = ArrayAdapter.createFromResource(root.getContext(), R.array.preferences, R.layout.profile_spinner_item_layout);
+        preferenceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        preference.setAdapter(preferenceSpinnerAdapter);
+
+        if (user.getIndustry().equals("Bollywood")){
+            industry.setSelection(0);
+        }
+
+        else{
+            industry.setSelection(1);
+        }
+
+        if (user.getPreference().equals("OTT Platform")){
+            preference.setSelection(0);
+        }
+
+        else{
+            preference.setSelection(1);
+        }
+    }
+
+    public boolean validateInputs(){
+        if (name.getText().toString().equals("")){
+            name.setError("Please enter a valid name!");
+            return false;
+        }
+
+        return true;
     }
 }

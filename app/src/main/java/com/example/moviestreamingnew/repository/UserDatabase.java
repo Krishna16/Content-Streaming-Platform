@@ -77,6 +77,29 @@ public class UserDatabase {
         });
     }
 
+    //to update profile info for profile fragment
+    public void uploadUserData(User user){
+        String userId = this.mAuth.getCurrentUser().getUid();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Please wait while we update your profile...");
+        progressDialog.show();
+
+        databaseReference.child("users").child(userId).setValue(user,1).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                progressDialog.dismiss();
+                Toast.makeText(context, "Profile Updated Successfully!!", Toast.LENGTH_LONG).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(context, "Error Updating Profile!!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public void getSelectedGenres(){
         /*ValueEventListener genresListener = new ValueEventListener() {
             @Override

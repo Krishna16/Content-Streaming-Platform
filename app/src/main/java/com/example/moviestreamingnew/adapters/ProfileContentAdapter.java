@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class ProfileContentAdapter extends RecyclerView.Adapter<ProfileContentAd
 
     @Override
     public int getItemCount() {
+        Log.d("ProfileContentAdapter", "Content size: " + content.size());
         return content.size();
     }
 

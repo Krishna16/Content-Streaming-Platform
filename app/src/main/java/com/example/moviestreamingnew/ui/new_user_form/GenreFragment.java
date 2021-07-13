@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.example.moviestreamingnew.NavigationActivity;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.adapters.GenreSelectionAdapter;
 import com.example.moviestreamingnew.common.RecyclerTouchListener;
@@ -28,6 +29,9 @@ import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.ShowsDatabase;
 import com.example.moviestreamingnew.repository.Storage;
+import com.example.moviestreamingnew.repository.UserDatabase;
+import com.example.moviestreamingnew.ui.profile.ProfileFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,12 +70,17 @@ public class GenreFragment extends Fragment {
 
     private ExecutorService pool;
 
+    private FirebaseAuth mAuth;
+
+    private UserDatabase userDatabase;
+
     public GenreFragment(Context context) {
         // Required empty public constructor
         this.genres = new ArrayList<>();
         this.context = context;
         this.selectedGenres = new ArrayList<String>();
         this.showsDatabase = new ShowsDatabase(context);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -101,19 +110,48 @@ public class GenreFragment extends Fragment {
 
         sharedPreferences = new ShowsSharedPreferences(root.getContext());
 
+        userDatabase = new UserDatabase(root.getContext());
+
+        //will get invoked when called from profile fragment
+        if (context.getClass() == NavigationActivity.class){
+            next.setText("Save");
+        }
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IndustryFragment industryFragment = new IndustryFragment();
+                //checking if text of button is next, then take to industry fragment
+                if (next.getText().toString().toLowerCase().equals("NEXT".toLowerCase())) {
+                    IndustryFragment industryFragment = new IndustryFragment();
 
-                User.getInstance().setGenres(selectedGenres);
+                    User.getInstance().setGenres(selectedGenres);
 
-                sharedPreferences.storeSelectedGenres(selectedGenres);
+                    sharedPreferences.storeSelectedGenres(selectedGenres);
 
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, industryFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, industryFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+
+                //if text is save, update genres (or even entire user object) in firebase
+                //database as button is pressed in profile fragment
+                else{
+                    User userTemp = sharedPreferences.getUserData(mAuth.getCurrentUser().getUid());
+                    userTemp.setGenres(selectedGenres);
+                    sharedPreferences.storeUserData(userTemp);
+                    sharedPreferences.storeSelectedGenres(selectedGenres);
+                    userDatabase.uploadUserData(userTemp);
+
+                    Toast.makeText(root.getContext(), "Please restart the app to see changes!!", Toast.LENGTH_LONG).show();
+
+                    ProfileFragment profileFragment = new ProfileFragment();
+
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.nav_host_fragment, profileFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
 
