@@ -86,6 +86,9 @@ public class ShowsSharedPreferences {
         User user = gson.fromJson(userJson, User.class);
 
         ArrayList<String> likedShows = user.getLikedShows();
+        if (likedShows == null){
+            return false;
+        }
 
         for (int i = 0; i < likedShows.size(); i++){
             if (show.equals(likedShows.get(i))){
@@ -106,6 +109,9 @@ public class ShowsSharedPreferences {
         User user = gson.fromJson(userJson, User.class);
 
         ArrayList<String> watchLater = user.getWatchLaterShows();
+        if (watchLater == null){
+            return false;
+        }
 
         for (int i = 0; i < watchLater.size(); i++){
             if (show.equals(watchLater.get(i))){
@@ -206,6 +212,9 @@ public class ShowsSharedPreferences {
         User user = gson.fromJson(userJson, User.class);
 
         ArrayList<String> likedMovies = user.getLikedMovies();
+        if(likedMovies == null){
+            return false;
+        }
 
         for (int i = 0; i < likedMovies.size(); i++){
             if (movie.equals(likedMovies.get(i))){
@@ -226,6 +235,9 @@ public class ShowsSharedPreferences {
         User user = gson.fromJson(userJson, User.class);
 
         ArrayList<String> watchLaterMovies = user.getWatchLaterMovies();
+        if(watchLaterMovies == null){
+            return false;
+        }
 
         for (int i = 0; i < watchLaterMovies.size(); i++){
             if (movie.equals(watchLaterMovies.get(i))){

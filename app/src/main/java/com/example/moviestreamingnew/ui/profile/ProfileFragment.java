@@ -92,6 +92,7 @@ public class ProfileFragment extends Fragment {
 
     private Spinner preference;
     private Spinner industry;
+    private Spinner gender;
 
     private View root;
 
@@ -157,6 +158,7 @@ public class ProfileFragment extends Fragment {
 
         preference = root.findViewById(R.id.preference_spinner);
         industry = root.findViewById(R.id.industry_spinner);
+        gender = root.findViewById(R.id.gender_spinner);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -298,6 +300,7 @@ public class ProfileFragment extends Fragment {
                         user.setName(name.getText().toString());
                         user.setPreference(preference.getSelectedItem().toString());
                         user.setIndustry(industry.getSelectedItem().toString());
+                        user.setGender(gender.getSelectedItem().toString());
 
                         List<String> temp = new ArrayList<>();
                         temp.add(genre1.getText().toString());
@@ -364,6 +367,10 @@ public class ProfileFragment extends Fragment {
         preferenceSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         preference.setAdapter(preferenceSpinnerAdapter);
 
+        ArrayAdapter<CharSequence> genderSpinnerAdapter = ArrayAdapter.createFromResource(root.getContext(), R.array.genders, R.layout.profile_spinner_item_layout);
+        genderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gender.setAdapter(genderSpinnerAdapter);
+
         if (user.getIndustry().equals("Bollywood")){
             industry.setSelection(0);
         }
@@ -378,6 +385,18 @@ public class ProfileFragment extends Fragment {
 
         else{
             preference.setSelection(1);
+        }
+
+        if (user.getGender().equals("Male")){
+            gender.setSelection(0);
+        }
+
+        else if (user.getGender().equals("Female")){
+            gender.setSelection(1);
+        }
+
+        else if (user.getGender().equals("Prefer not to say")){
+            gender.setSelection(2);
         }
     }
 

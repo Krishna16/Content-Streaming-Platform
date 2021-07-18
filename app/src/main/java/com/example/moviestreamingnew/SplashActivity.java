@@ -66,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
                                     }
 
                                     else {
-                                        Log.d("Login: ", "In UserDatabase");
+                                        //Log.d("Login: ", "In UserDatabase");
 
                                         Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
                                         startActivity(i);

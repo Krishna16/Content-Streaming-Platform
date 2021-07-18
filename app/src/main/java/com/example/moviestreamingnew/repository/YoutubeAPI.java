@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class YoutubeAPI {
-    private static final String CLIENT_SECRETS= "client_secret.json";
+    private static final String CLIENT_SECRETS= "D:\\MovieStreamingNew\\app\\client_secret.json";
     private static final Collection<String> SCOPES =
             Arrays.asList("https://www.googleapis.com/auth/youtube.force-ssl");
 
@@ -46,8 +46,8 @@ public class YoutubeAPI {
     }
 
     public static YouTube getService() throws GeneralSecurityException, IOException {
-        //final NetHttpTransport httpTransport = new com.google.api.client.http.javanet.NetHttpTransport();
-        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        final NetHttpTransport httpTransport = new com.google.api.client.http.javanet.NetHttpTransport();
+        //final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(httpTransport);
         return new YouTube.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)

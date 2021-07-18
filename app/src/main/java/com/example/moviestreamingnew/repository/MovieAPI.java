@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.room.ColumnInfo;
-
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.models.Movie;
 import com.example.moviestreamingnew.ui.movie_description.MovieDescriptionFragment;
@@ -17,8 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -359,5 +355,105 @@ public class MovieAPI {
         thread.start();
 
         return trending;
+    }
+
+    public ArrayList<CardImageChild> getTVContent(){
+        ArrayList<CardImageChild> movieImages = new ArrayList<>();
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/discover/tv?api_key=b0e77d10e994a9da4f7336d4efc50bc3&language=en-US&sort_by=popularity.desc&page=1&include_null_first_air_dates=false")
+                        .get()
+                        .build();
+
+                Log.d("Random Page: ", "" + random_page);
+
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    String jsonData = response.body().string();
+
+                    JSONObject Jobject = new JSONObject(jsonData);
+
+                    Log.d("MovieFragment", "Response: " + Jobject.toString());
+
+                    JSONArray results = (JSONArray) Jobject.get("results");
+
+                    Log.d("MovieAPI results: ", "" + results.toString());
+
+                    int y = 0;
+
+                    while (movieImages.size() != 30){
+                        if (results.getJSONObject(y).get("backdrop_path").toString().equals(null) && results.getJSONObject(y).get("poster_path").toString().equals(null))
+                            y = y + 1;
+
+                        else {
+                            CardImageChild temp = new CardImageChild("http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("poster_path").toString(), results.getJSONObject(y).get("name").toString(), "http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("backdrop_path").toString(), results.getJSONObject(y).get("id").toString());
+                            movieImages.add(temp);
+                            y = y + 1;
+                        }
+                    }
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+        return movieImages;
+    }
+
+    public ArrayList<CardImageChild> getMovieContent(){
+        ArrayList<CardImageChild> movieImages = new ArrayList<>();
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/discover/movie?api_key=b0e77d10e994a9da4f7336d4efc50bc3&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=2")
+                        .get()
+                        .build();
+
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    String jsonData = response.body().string();
+
+                    JSONObject Jobject = new JSONObject(jsonData);
+
+                    JSONArray results = (JSONArray) Jobject.get("results");
+
+                    int y = 0;
+
+                    while (movieImages.size() != 30){
+                        if (results.getJSONObject(y).get("backdrop_path").toString().equals(null) && results.getJSONObject(y).get("poster_path").toString().equals(null))
+                            y = y + 1;
+
+                        else {
+                            CardImageChild temp = new CardImageChild("http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("poster_path").toString(), results.getJSONObject(y).get("original_title").toString(), "http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("backdrop_path").toString(), results.getJSONObject(y).get("id").toString());
+                            movieImages.add(temp);
+                            y = y + 1;
+                        }
+                    }
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+        return movieImages;
     }
 }

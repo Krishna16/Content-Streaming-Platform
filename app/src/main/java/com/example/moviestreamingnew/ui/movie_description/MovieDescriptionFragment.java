@@ -1,5 +1,6 @@
 package com.example.moviestreamingnew.ui.movie_description;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.example.moviestreamingnew.models.Show;
 import com.example.moviestreamingnew.repository.UserDatabase;
 import com.example.moviestreamingnew.repository.YoutubeAPI;
 import com.example.moviestreamingnew.ui.description.DescriptionFragment;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -127,14 +129,23 @@ public class MovieDescriptionFragment extends AppCompatActivity {
                     public void run() {
                         super.run();
 
-                        YoutubeAPI youtubeAPI = new YoutubeAPI();
+                        /*YoutubeAPI youtubeAPI = new YoutubeAPI();
                         try {
                             youtubeAPI.getYoutubeVideoId(movie.getTitle());
                         } catch (GeneralSecurityException e) {
+                            Log.d("MovieDescriptioFragment", "Youtube API: " + e.getLocalizedMessage());
                             e.printStackTrace();
                         } catch (IOException e) {
+                            Log.d("MovieDescriptioFragment", "Youtube API: " + e.getMessage());
                             e.printStackTrace();
-                        }
+                        }*/
+
+                        Intent intent = new Intent(Intent.ACTION_SEARCH);
+                        intent.setPackage("com.google.android.youtube");
+                        intent.putExtra("query", Movie.getInstance().getTitle() + " Trailer");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
                     }
                 };
 
@@ -196,7 +207,7 @@ public class MovieDescriptionFragment extends AppCompatActivity {
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(poster);
 
-        rating.setText("Rating: " + movie.getRating());
+        rating.setText("Rating: " + movie.getRating() + "/10");
 
         title.setText(movie.getTitle());
 

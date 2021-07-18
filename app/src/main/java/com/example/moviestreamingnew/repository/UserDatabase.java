@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserDatabase {
     private DatabaseReference databaseReference;
@@ -284,62 +285,86 @@ public class UserDatabase {
                 int i = 0;
 
                 for (DataSnapshot item: children){
-                    switch (i){
-                        case 0: Iterable<DataSnapshot> genres = item.getChildren();
-                                for (DataSnapshot genre: genres){
-                                    user.addGenre(genre.getValue().toString());
+                    Log.d("UserDatabase: ", "Item: " + item.getKey());
+                    switch (Objects.requireNonNull(item.getKey())){
+                        case "gender": if (item.getKey().toString().equals("gender")) {
+                                    user.setGender(item.getValue().toString());
                                 }
                                 i = i + 1;
                                 break;
 
-                        case 1: user.setIndustry(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 2: Iterable<DataSnapshot> likedMovies = item.getChildren();
-                                for (DataSnapshot like: likedMovies){
-                                    user.addToLikedMovies(like.getValue().toString());
+                        case "genres": if (item.getKey().toString().equals("genres")) {
+                                    Iterable<DataSnapshot> genres = item.getChildren();
+                                    for (DataSnapshot genre : genres) {
+                                        user.addGenre(genre.getValue().toString());
+                                    }
                                 }
                                 i = i + 1;
                                 break;
 
-                        case 3: Iterable<DataSnapshot> likedShows = item.getChildren();
-                                for (DataSnapshot like: likedShows){
-                                    user.addToLikedShows(like.getValue().toString());
+                        case "industry": if (item.getKey().toString().equals("industry")) {
+                                    user.setIndustry(item.getValue().toString());
                                 }
                                 i = i + 1;
                                 break;
 
-                        case 4: user.setName(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 5: user.setPreference(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 6: user.setUid(item.getValue().toString());
-                                i = i + 1;
-                                break;
-
-                        case 7: Iterable<DataSnapshot> watchLaterMovies = item.getChildren();
-                                for (DataSnapshot later: watchLaterMovies){
-                                    user.addToWatchLaterMovies(later.getValue().toString());
+                        case "likedMovies": if (item.getKey().toString().equals("likedMovies")) {
+                                    Iterable<DataSnapshot> likedMovies = item.getChildren();
+                                    for (DataSnapshot like : likedMovies) {
+                                        user.addToLikedMovies(like.getValue().toString());
+                                    }
                                 }
                                 i = i + 1;
                                 break;
 
-                        case 8: Iterable<DataSnapshot> watchLaterShows = item.getChildren();
-                                for (DataSnapshot later: watchLaterShows){
-                                    user.addToWatchLaterShows(later.getValue().toString());
+                        case "likedShows": if (item.getKey().toString().equals("likedShows")) {
+                                    Iterable<DataSnapshot> likedShows = item.getChildren();
+                                    for (DataSnapshot like : likedShows) {
+                                        user.addToLikedShows(like.getValue().toString());
+                                    }
                                 }
                                 i = i + 1;
                                 break;
 
-                        default: i = i + 1;
+                        case "name": if (item.getKey().toString().equals("name")) {
+                                    user.setName(item.getValue().toString());
+                                }
+                                i = i + 1;
+                                break;
+
+                        case "preference": if (item.getKey().toString().equals("preference"))
+                                user.setPreference(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case "uid": if (item.getKey().toString().equals("uid"))
+                                user.setUid(item.getValue().toString());
+                                i = i + 1;
+                                break;
+
+                        case "watchLaterMovies": if (item.getKey().toString().equals("watchLaterMovies")) {
+                                    Iterable<DataSnapshot> watchLaterMovies = item.getChildren();
+                                        for (DataSnapshot later : watchLaterMovies) {
+                                        user.addToWatchLaterMovies(later.getValue().toString());
+                                    }
+                                }
+                                i = i + 1;
+                                break;
+
+                        case "watchLaterShows": if (item.getKey().toString().equals("watchLaterShows")) {
+                                    Iterable<DataSnapshot> watchLaterShows = item.getChildren();
+                                    for (DataSnapshot later : watchLaterShows) {
+                                        user.addToWatchLaterShows(later.getValue().toString());
+                                    }
+                                }
+                                i = i + 1;
+                                break;
+
+                        default: break;
+                            /*i = i + 1;
                             if (i >= 9){
                             break;
-                        }
+                        }*/
                     }
                 }
 

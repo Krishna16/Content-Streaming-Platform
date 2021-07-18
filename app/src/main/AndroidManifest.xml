@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.movie_trailer_view.MovieTrailerActivity"></activity>
+        <activity android:name=".ui.list_find_content.ListFoundContentActivity"></activity>
+        <activity android:name=".ui.movie_trailer_view.MovieTrailerActivity" />
         <activity android:name=".account.NewUserForm" />
         <activity android:name=".account.SignUp" />
         <activity android:name=".account.Login" />

@@ -28,6 +28,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("C:/Users/Krishna/.android/debug.keystore")
+        }
+    }
 }
 
 dependencies {

@@ -24,4 +24,10 @@
         <item>Bollywood</item>
         <item>Hollywood</item>
     </string-array>
+
+    <string-array name="genders">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Prefer not to say</item>
+    </string-array>
 </resources>
