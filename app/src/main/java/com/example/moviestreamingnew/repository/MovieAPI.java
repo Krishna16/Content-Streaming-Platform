@@ -456,4 +456,211 @@ public class MovieAPI {
 
         return movieImages;
     }
+
+    public ArrayList<CardImageChild> getBollywoodMovieContent(){
+        ArrayList<CardImageChild> movieImages = new ArrayList<>();
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/discover/movie?api_key=b0e77d10e994a9da4f7336d4efc50bc3&region=IN&language=hi&sort_by=popularity.desc&with_release_type=3|2")
+                        .get()
+                        .build();
+
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    String jsonData = response.body().string();
+
+                    JSONObject Jobject = new JSONObject(jsonData);
+
+                    JSONArray results = (JSONArray) Jobject.get("results");
+
+                    int y = 0;
+
+                    while (movieImages.size() != 30){
+                        if (results.getJSONObject(y).get("backdrop_path").toString().equals(null) && results.getJSONObject(y).get("poster_path").toString().equals(null))
+                            y = y + 1;
+
+                        else {
+                            CardImageChild temp = new CardImageChild("http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("poster_path").toString(), results.getJSONObject(y).get("original_title").toString(), "http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("backdrop_path").toString(), results.getJSONObject(y).get("id").toString());
+                            movieImages.add(temp);
+                            y = y + 1;
+                        }
+                    }
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+        return movieImages;
+    }
+
+    public ArrayList<CardImageChild> getQueriedContent(String query){
+        ArrayList<CardImageChild> movieImages = new ArrayList<>();
+
+        if (query.contains(" ")){
+            query = query.replace(" ", "%20");
+        }
+
+        String finalQuery = query;
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/search/multi?api_key=b0e77d10e994a9da4f7336d4efc50bc3&query=" + finalQuery + "&page=1&include_adult=true")
+                        .get()
+                        .build();
+
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    String jsonData = response.body().string();
+
+                    JSONObject Jobject = new JSONObject(jsonData);
+
+                    JSONArray results = (JSONArray) Jobject.get("results");
+
+                    Log.d("MovieAPI results: ", "" + results.toString());
+
+                    int y = 0;
+
+                    while (movieImages.size() != 30){
+                        if (results.getJSONObject(y).get("backdrop_path").toString().equals(null) && results.getJSONObject(y).get("poster_path").toString().equals(null))
+                            y = y + 1;
+
+                        else {
+                            try {
+                                CardImageChild temp = new CardImageChild("http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("poster_path").toString(), results.getJSONObject(y).get("name").toString(), "http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("backdrop_path").toString(), results.getJSONObject(y).get("id").toString(), results.getJSONObject(y).get("media_type").toString());
+                                movieImages.add(temp);
+                                y = y + 1;
+                            }
+
+                            catch (Exception e){
+                                CardImageChild temp = new CardImageChild("http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("poster_path").toString(), results.getJSONObject(y).get("original_title").toString(), "http://image.tmdb.org/t/p/w500" + results.getJSONObject(y).get("backdrop_path").toString(), results.getJSONObject(y).get("id").toString(), results.getJSONObject(y).get("media_type").toString());
+                                movieImages.add(temp);
+                                y = y + 1;
+                            }
+                        }
+                    }
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+        return movieImages;
+    }
+
+    public Movie getContentById(String id, Context context, String type){
+        Movie movie = Movie.getInstance();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                OkHttpClient client = new OkHttpClient();
+
+                Request request = null;
+
+                if (type.equals("movie")) {
+                    request = new Request.Builder()
+                            .url("https://api.themoviedb.org/3/movie/" + id + "?api_key=b0e77d10e994a9da4f7336d4efc50bc3&language=en-US")
+                            .get()
+                            .build();
+                }
+
+                else if (type.equals("tv")){
+                    request = new Request.Builder()
+                            .url("https://api.themoviedb.org/3/tv/" + id + "?api_key=b0e77d10e994a9da4f7336d4efc50bc3&language=en-US")
+                            .get()
+                            .build();
+                }
+
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    String jsonData = response.body().string();
+
+                    JSONObject Jobject = new JSONObject(jsonData);
+
+                    if (type.equals("movie")) {
+                        movie.setBackdrop_path("http://image.tmdb.org/t/p/w500" + Jobject.get("backdrop_path").toString());
+                        movie.setPoster_path("http://image.tmdb.org/t/p/w500" + Jobject.get("poster_path").toString());
+                        movie.setTitle(Jobject.get("original_title").toString());
+                        movie.setDescription(Jobject.get("overview").toString());
+                        movie.setRating(Jobject.get("vote_average").toString());
+
+                        JSONArray genres = Jobject.getJSONArray("genres");
+
+                        Movie.getInstance().getGenres().clear();
+
+                        //Log.d("MovieAPI", "Genres are: " + genres.toString());
+                        //Log.d("MovieAPI", "Genres length: " + genres.length());
+
+                        for (int i = 0; i < genres.length(); i++) {
+                            movie.setGenres(genres.getJSONObject(i).get("name").toString());
+                        }
+
+                        getMovieWatchProviders(id);
+                    }
+
+                    else if (type.equals("tv")){
+                        movie.setBackdrop_path("http://image.tmdb.org/t/p/w500" + Jobject.get("backdrop_path").toString());
+                        movie.setPoster_path("http://image.tmdb.org/t/p/w500" + Jobject.get("poster_path").toString());
+                        movie.setTitle(Jobject.get("original_name").toString());
+                        movie.setDescription(Jobject.get("overview").toString());
+                        movie.setRating(Jobject.get("vote_average").toString());
+
+                        JSONArray genres = Jobject.getJSONArray("genres");
+
+                        Movie.getInstance().getGenres().clear();
+
+                        //Log.d("MovieAPI", "Genres are: " + genres.toString());
+                        //Log.d("MovieAPI", "Genres length: " + genres.length());
+
+                        for (int i = 0; i < genres.length(); i++) {
+                            movie.setGenres(genres.getJSONObject(i).get("name").toString());
+                        }
+
+                        getMovieWatchProviders(id);
+                    }
+
+                    Log.d("MovieAPI GetMovieById", "Response: " + Jobject.toString());
+
+                    Intent intent = new Intent(context, MovieDescriptionFragment.class);
+                    intent.putExtra("MovieData", movie);
+                    context.startActivity(intent);
+
+                    progressDialog.dismiss();
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+        return movie;
+    }
 }

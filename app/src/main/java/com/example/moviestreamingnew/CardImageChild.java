@@ -5,6 +5,7 @@ public class CardImageChild {
     private String path;
     private String backdrop_url;
     private String movie_id;
+    private String type;
 
     public CardImageChild(String url, String path) {
         this.url = url;
@@ -16,6 +17,14 @@ public class CardImageChild {
         this.path = path;
         this.backdrop_url = backdrop_url;
         this.movie_id = movie_id;
+    }
+
+    public CardImageChild(String url, String path, String backdrop_url, String movie_id, String type) {
+        this.url = url;
+        this.path = path;
+        this.backdrop_url = backdrop_url;
+        this.movie_id = movie_id;
+        this.type = type;
     }
 
     public String getImage() {
@@ -48,5 +57,13 @@ public class CardImageChild {
 
     public void setMovie_id(String movie_id) {
         this.movie_id = movie_id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

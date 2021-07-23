@@ -1,6 +1,7 @@
 package com.example.moviestreamingnew.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviestreamingnew.CardImageChild;
 import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.common.BlurTransformation;
+import com.example.moviestreamingnew.models.Movie;
+import com.example.moviestreamingnew.repository.MovieAPI;
+import com.example.moviestreamingnew.ui.movie_description.MovieDescriptionFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,10 +27,12 @@ import java.util.ArrayList;
 public class ListFoundContentAdapter extends RecyclerView.Adapter<ListFoundContentAdapter.ListContentViewHolder> {
     private ArrayList<CardImageChild> images;
     private Context context;
+    private MovieAPI movieAPI;
 
     public ListFoundContentAdapter(ArrayList<CardImageChild> images, Context context){
         this.images = images;
         this.context = context;
+        this.movieAPI = new MovieAPI();
     }
 
     @NonNull
@@ -53,6 +59,13 @@ public class ListFoundContentAdapter extends RecyclerView.Adapter<ListFoundConte
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.cardView_image);
+
+        holder.cardView_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                movieAPI.getContentById(images.get(position).getMovie_id(), context, images.get(position).getType());
+            }
+        });
     }
 
     @Override

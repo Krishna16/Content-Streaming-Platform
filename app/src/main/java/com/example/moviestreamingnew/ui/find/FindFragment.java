@@ -1,14 +1,18 @@
 package com.example.moviestreamingnew.ui.find;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -83,6 +87,37 @@ public class FindFragment extends Fragment {
         genresRecyclerView.setLayoutManager(linearLayoutManager);
         genresRecyclerView.setAdapter(findGenresRecyclerAdapter);
 
+        hollywoodCardView = root.findViewById(R.id.hollywood_cardView);
+        bollywoodCardView = root.findViewById(R.id.bollywood_cardView);
+
+        query_editText = root.findViewById(R.id.query_editText);
+
+        query_editText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        keyCode == KeyEvent.KEYCODE_ENTER) {
+                    if (query_editText.getText().toString().equals("")){
+                        Toast.makeText(root.getContext(), "Please enter your query!!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    else {
+                        // Perform action on key press
+                        Toast.makeText(root.getContext(), query_editText.getText(), Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(root.getContext(), ListFoundContentActivity.class);
+                        intent.putExtra("Query", query_editText.getText().toString());
+                        root.getContext().startActivity(intent);
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        });
+
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -104,6 +139,24 @@ public class FindFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(root.getContext(), ListFoundContentActivity.class);
                 intent.putExtra("Movie", "Movie");
+                root.getContext().startActivity(intent);
+            }
+        });
+
+        hollywoodCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(root.getContext(), ListFoundContentActivity.class);
+                intent.putExtra("Hollywood", "Hollywood");
+                root.getContext().startActivity(intent);
+            }
+        });
+
+        bollywoodCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(root.getContext(), ListFoundContentActivity.class);
+                intent.putExtra("Bollywood", "Bollywood");
                 root.getContext().startActivity(intent);
             }
         });
