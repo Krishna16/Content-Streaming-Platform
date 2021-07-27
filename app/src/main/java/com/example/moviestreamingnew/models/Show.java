@@ -2,6 +2,8 @@ package com.example.moviestreamingnew.models;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+
 public class Show {
     private String name;
     private double rating;
