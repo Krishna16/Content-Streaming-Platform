@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.moviestreamingnew.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class MoreDetailsFragment extends Fragment {
@@ -29,12 +31,16 @@ public class MoreDetailsFragment extends Fragment {
 
     private String showGenres;
 
+    private String platforms;
+    private TextView alternativePlatforms;
+
     public MoreDetailsFragment() {
         // Required empty public constructor
     }
 
-    public MoreDetailsFragment(String genres){
+    public MoreDetailsFragment(String genres, String platforms){
         this.showGenres = genres;
+        this.platforms = platforms;
     }
 
     @Override
@@ -52,8 +58,21 @@ public class MoreDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_more_details, container, false);
 
+        if (showGenres.contains("[") || showGenres.contains("]")){
+            showGenres.replace("[", "");
+            showGenres.replace("]", "");
+        }
+
+        if (platforms.contains("[") || platforms.contains("]")){
+            platforms.replace("[", "");
+            platforms.replace("]", "");
+        }
+
         genres = root.findViewById(R.id.genres);
         genres.setText(showGenres);
+
+        alternativePlatforms = root.findViewById(R.id.alternate_platforms);
+        alternativePlatforms.setText(platforms);
 
         return root;
     }

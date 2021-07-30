@@ -121,6 +121,7 @@ public class ShowsDatabase {
                                     Show.getInstance().setEpisodes(Integer.parseInt(documentSnapshot.get("episodes").toString()));
                                     Show.getInstance().setLikes(Integer.parseInt(documentSnapshot.get("likes").toString()));
                                     Show.getInstance().setGenre(documentSnapshot.get("genre").toString());
+                                    Show.getInstance().setPlatforms(documentSnapshot.get("platforms").toString());
                                 }
                             };
 

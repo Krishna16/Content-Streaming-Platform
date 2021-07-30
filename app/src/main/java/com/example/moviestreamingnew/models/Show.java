@@ -16,6 +16,8 @@ public class Show {
     //singleton instance
     private static Show show = null;
 
+    private String platforms;
+
     public Show() {
         this.name = "";
         this.rating = 0;
@@ -101,6 +103,20 @@ public class Show {
     public void setGenre(String [] genres){
         for (int i = 0; i < genres.length; i++){
             this.genre += genres[i] + ", ";
+        }
+    }
+
+    public String getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(String platforms) {
+        this.platforms = platforms;
+    }
+
+    public void setPlatforms(String [] platforms){
+        for (int i = 0; i < platforms.length; i++){
+            this.platforms += platforms[i] + ", ";
         }
     }
 }

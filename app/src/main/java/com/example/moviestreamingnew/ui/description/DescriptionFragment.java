@@ -133,7 +133,7 @@ public class DescriptionFragment extends AppCompatActivity {
                 }
 
                 if (tab.getPosition() == 1){
-                    MoreDetailsFragment moreDetailsFragment = new MoreDetailsFragment(Show.getInstance().getGenre());
+                    MoreDetailsFragment moreDetailsFragment = new MoreDetailsFragment(Show.getInstance().getGenre(), Show.getInstance().getPlatforms());
 
                     //FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

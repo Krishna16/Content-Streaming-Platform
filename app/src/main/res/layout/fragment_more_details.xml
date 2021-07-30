@@ -36,4 +36,31 @@
         android:textSize="16sp"
         android:id="@+id/genres"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/genres"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:id="@+id/textView2"
+        android:text="Alternate Platforms: "/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Netflix, Amazon Prime Video"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:id="@+id/alternate_platforms"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
