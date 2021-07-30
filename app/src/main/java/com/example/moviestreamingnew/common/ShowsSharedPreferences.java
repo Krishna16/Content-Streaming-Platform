@@ -2,6 +2,7 @@ package com.example.moviestreamingnew.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.moviestreamingnew.models.User;
 import com.google.gson.Gson;
@@ -48,6 +49,7 @@ public class ShowsSharedPreferences {
         String userJson = gson.toJson(user);
 
         editor.putString(user.getUid(), userJson);
+        Log.d("ShowsSharedPreferences", "User ID: " + user.getUid());
         editor.apply();
     }
 
@@ -56,6 +58,8 @@ public class ShowsSharedPreferences {
 
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
+
+        //Log.d("ShowsSharedPreferences", "User ID: " + user.getUid());
 
         if (user != null){
             return user;
@@ -85,6 +89,10 @@ public class ShowsSharedPreferences {
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
 
+        if (user == null){
+            return false;
+        }
+
         ArrayList<String> likedShows = user.getLikedShows();
         if (likedShows == null){
             return false;
@@ -107,6 +115,10 @@ public class ShowsSharedPreferences {
 
         String userJson = sharedPreferences.getString(uid, "");
         User user = gson.fromJson(userJson, User.class);
+
+        if (user == null){
+            return false;
+        }
 
         ArrayList<String> watchLater = user.getWatchLaterShows();
         if (watchLater == null){

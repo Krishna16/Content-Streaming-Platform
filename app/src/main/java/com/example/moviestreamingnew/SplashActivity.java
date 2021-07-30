@@ -51,6 +51,8 @@ public class SplashActivity extends AppCompatActivity {
                     if (mAuth.getCurrentUser() != null) {
                         User.getInstance().setUid(mAuth.getCurrentUser().getUid());
 
+                        Log.d("Splash Activity", "User ID: " + User.getInstance().getUid());
+
                         DatabaseReference uidReference = firebaseDatabase.child("users").child(User.getInstance().getUid());
 
                         ValueEventListener eventListener = new ValueEventListener() {
@@ -60,18 +62,20 @@ public class SplashActivity extends AppCompatActivity {
                                     Intent i = new Intent(SplashActivity.this, NewUserForm.class);
                                     startActivity(i);
                                     finish();
-                                } else {
+                                }
+                                else {
+                                    /*if (showsSharedPreferences.getUserData(mAuth.getCurrentUser().getUid()) == null){
+                                        userDatabase.downloadUserDataToSharedPreferences();
+                                    }*/
+                                        //Log.d("Login: ", "In UserDatabase");
+
                                     if (showsSharedPreferences.getUserData(mAuth.getCurrentUser().getUid()) == null){
                                         userDatabase.downloadUserDataToSharedPreferences();
                                     }
 
-                                    else {
-                                        //Log.d("Login: ", "In UserDatabase");
-
-                                        Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
-                                        startActivity(i);
-                                        finish();
-                                    }
+                                    Intent i = new Intent(SplashActivity.this, NavigationActivity.class);
+                                    startActivity(i);
+                                    finish();
                                 }
                             }
 

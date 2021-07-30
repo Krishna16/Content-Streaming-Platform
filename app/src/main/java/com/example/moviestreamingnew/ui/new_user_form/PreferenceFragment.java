@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.moviestreamingnew.R;
 import com.example.moviestreamingnew.common.ShowsSharedPreferences;
 import com.example.moviestreamingnew.models.User;
 import com.example.moviestreamingnew.repository.UserDatabase;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class PreferenceFragment extends Fragment {
@@ -98,6 +100,10 @@ public class PreferenceFragment extends Fragment {
                     User.getInstance().setPreference(selected);
                     UserDatabase userDB = new UserDatabase(root.getContext());
                     userDB.uploadUserData();
+
+                    User.getInstance().setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                    Log.d("Preference Fragment: ", "User ID: " + User.getInstance().getUid());
 
                     showsSharedPreferences.storeUserData(User.getInstance());
                 }
