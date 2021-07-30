@@ -99,9 +99,8 @@ public class PreferenceFragment extends Fragment {
                 else {
                     User.getInstance().setPreference(selected);
                     UserDatabase userDB = new UserDatabase(root.getContext());
-                    userDB.uploadUserData();
-
                     User.getInstance().setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    userDB.uploadUserData();
 
                     Log.d("Preference Fragment: ", "User ID: " + User.getInstance().getUid());
 
