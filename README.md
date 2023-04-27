@@ -6,6 +6,20 @@ Users can create their account and select the genres they are the most intereste
 
 Users have the flexibility to edit their choice of genres (as well as other information submitted during account creation) and will be served new content if any changes are made to the genre.
 
+# Installation
+To install the app, follow these steps:
+1. Clone the repo to your machine.
+2. (Optional - For physical devices only) Enable installation from unknown sources in your device's settings as well as Install app from USB debugging in developer options.
+3. Run the project using your favorite IDE.
+
+# Usage
+To use the app, follow these steps:
+1. Open the app on your device after installation.
+2. Sign up or log in to your account.
+3. Select your favorite genres in the form that shows up after signing in.
+4. Browse TV shows and movies in the app.
+5. Stream TV shows or get information about movies.
+
 App Demonstration:
 
 https://user-images.githubusercontent.com/24318939/232470885-62458928-25b3-45ba-a241-2046a507155a.mp4
