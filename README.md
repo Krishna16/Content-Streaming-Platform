@@ -1,6 +1,6 @@
 # Content-Streaming-Platform
 
-Streaming content has become the norm in 2020 after the lockdown forced the world indoors. As the name implies, this project is a full-fledged streaming platform made using Java, XML & Firebase as the backend.
+Streaming content has become the norm in 2020 after the lockdown forced the world indoors. As the name implies, this project is a full-fledged streaming platform made using Java, XML & Firebase as the backend. MovieDatabase API is my go-to for all information on movies and is implemented within the app.
 
 Users can create their account and select the genres they are the most interested in. The platform will then recommend content (which includes TV shows as well as Movies) according to the genres selected. For now, the platform only supports streaming TV shows and provides extensive information on various movies (such as their ratings, genre & descriptions).
 
@@ -20,7 +20,14 @@ To use the app, follow these steps:
 4. Browse TV shows and movies in the app.
 5. Stream TV shows or get information about movies.
 
-App Demonstration:
+# Dependencies
+The app uses the following dependencies:
+Firebase Authentication
+Firebase Firestore
+OkHttp
+Glide, Picasso
+
+# App Demonstration:
 
 https://user-images.githubusercontent.com/24318939/232470885-62458928-25b3-45ba-a241-2046a507155a.mp4
 
