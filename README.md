@@ -22,10 +22,10 @@ To use the app, follow these steps:
 
 # Dependencies
 The app uses the following dependencies:
-Firebase Authentication
-Firebase Firestore
-OkHttp
-Glide, Picasso
+* Firebase Authentication
+* Firebase Firestore
+* OkHttp
+* Glide, Picasso
 
 # App Demonstration:
 
